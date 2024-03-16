@@ -1,9 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react'
 import io from 'socket.io-client';
-import { backendUrl } from './utils/backendUrl';
+import { backendUrl } from '../utils/backendUrl';
 
 const socket = io(backendUrl);
-const App = () => {
+const Chat = () => {
   const [chat, setChat] = useState([]);
   const [message, setMessage] = useState("");
   const isListeningRef = useRef(false);
@@ -50,4 +50,4 @@ const App = () => {
   )
 }
 
-export default App
+export default Chat
