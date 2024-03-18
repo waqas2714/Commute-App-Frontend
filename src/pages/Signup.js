@@ -1,22 +1,36 @@
 import React, { useState } from "react";
-import {
-  Link
-} from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import { toastOptions } from "..";
+import { backendUrl } from "../utils/backendUrl";
+import axios from "axios";
 
-const initialState = {
-  name : "",
-  cms : "",
-  email : "",
-  password : "",
-  contactNo : "",
-  school : "",
-  isDriver : null,
-}
+const initialStateCar = {
+  name: "",
+  model: "",
+  number: "",
+  color: "",
+};
+
+const initialStateUser = {
+  name: "",
+  cms: "",
+  email: "",
+  password: "",
+  confirmPassword: "",
+  phone: "",
+  school: "",
+  isDriver: false,
+};
 
 const Signup = () => {
   const [image, setImage] = useState(null);
   const [openSchool, setOpenSchool] = useState(false);
   const [openRole, setOpenRole] = useState(false);
+  const [user, setUser] = useState(initialStateUser);
+  const [car, setCar] = useState(initialStateCar);
+  const [isCarOpen, setIsCarOpen] = useState(false);
+  const navigate = useNavigate();
   const nustSchools = [
     "SEECS",
     "SMME",
@@ -28,6 +42,7 @@ const Signup = () => {
     "NBS",
     "NSHS",
   ];
+
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     const reader = new FileReader();
@@ -40,47 +55,182 @@ const Signup = () => {
       reader.readAsDataURL(file);
     }
   };
+
+  const handleInputChangeUser = (e) => {
+    const { name, value } = e.target;
+    setUser({ ...user, [name]: value });
+  };
+
+  const handleInputChangeCar = (e) => {
+    const { name, value } = e.target;
+    setCar({ ...car, [name]: value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    // Check if all fields are filled
+
+    if (
+      user.name === "" ||
+      user.cms === "" ||
+      user.email === "" ||
+      user.password === "" ||
+      user.confirmPassword === "" ||
+      user.phone === "" ||
+      user.school === "" ||
+      (user.isDriver &&
+        (car.name === "" ||
+          car.model === "" ||
+          car.number === "" ||
+          car.color === ""))
+    ) {
+      toast.error("Please fill in all fields.", toastOptions);
+      return;
+    }
+
+    // Check CMS format
+    const cmsRegex = /^\d{6}$/;
+    if (!cmsRegex.test(user.cms)) {
+      toast.error("CMS ID should be a 6-digit number.", toastOptions);
+      return;
+    }
+
+    // Check email format
+    const emailRegex =
+      /^[a-zA-Z]+\.[a-zA-Z0-9]+(\d{2})[a-zA-Z]+@([a-zA-Z]+)\.edu\.pk$/;
+    if (!emailRegex.test(user.email)) {
+      toast.error("Please enter a valid NUST email address.", toastOptions);
+      return;
+    }
+
+    const regex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\W).{8,}$/;
+    const isPasswordValid = regex.test(user.password);
+    if (!isPasswordValid) {
+      toast.error(
+        "Password should contain at least 8 characters, including one uppercase letter, one lowercase letter, one number, and one special character.",
+        toastOptions
+      );
+      return;
+    }
+
+    // Check if passwords match
+    if (user.password !== user.confirmPassword) {
+      toast.error("Passwords do not match.", toastOptions);
+      return;
+    }
+
+    // Check phone number format
+    const phoneRegex = /^03\d{9}$/;
+    if (!phoneRegex.test(user.phone)) {
+      toast.error("Please enter a valid phone number.", toastOptions);
+      return;
+    }
+
+    if (!image) {
+      toast.error("Please select an image.", toastOptions);
+      return;
+    }
+
+    try {
+      const formData = new FormData();
+      formData.append("image", image);
+      formData.append("email", user.email);
+      formData.append("username", user.name);
+      formData.append("password", user.password);
+      formData.append("phone", user.phone);
+      formData.append("school", user.school);
+      formData.append("isDriver", user.isDriver);
+      formData.append("cms", user.cms);
+      if (user.isDriver) {
+        formData.append("carDetails", JSON.stringify(car));
+      }
+
+      // Send the form data to the backend API
+      const { data } = await axios.post(
+        `${backendUrl}/api/auth/signup`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      if (data.success) {
+        toast.success(
+          `An email has been sent to the address ${user.email}. Please verify your email.`,
+          toastOptions
+        );
+        navigate("/");
+      } else {
+        toast.error(data.error, toastOptions);
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+
   return (
     <div className="bg-black pt-3 ">
-      <img src="/signupLogo.png" className=" max-w-[70%] mx-auto " alt="logo" />
+      <img
+        src="/signupLogo.png"
+        className=" max-w-[70%] mx-auto lg:min-w-[100vh]"
+        alt="logo"
+      />
+      <h3 className="text-white text-center text-4xl font-semibold mb-10">
+        Signup
+      </h3>
 
-      <form className="flex flex-col justify-center items-center gap-y-4  max-w-[730px] mx-auto">
-        <h3 className="text-white text-center text-4xl font-semibold">
-          Signup
-        </h3>
-        <div className="flex flex-col w-[70%] gap-2">
+      <form
+        className="flex flex-col lg:flex-row lg:flex-wrap lg:justify-around justify-center items-center gap-y-4  max-w-[730px] lg:max-w-screen-lg mx-auto"
+        onSubmit={handleSubmit}
+      >
+        <div className="flex flex-col w-[70%] lg:w-[45%] gap-2">
           <label className="text-white text-2xl font-semibold">Name</label>
           <input
             type="text"
             placeholder="Name"
             className=" h-12 rounded-[2rem] px-4 "
+            name="name"
+            value={user.name}
+            onChange={handleInputChangeUser}
           />
         </div>
-        <div className="flex flex-col w-[70%] gap-2">
+        <div className="flex flex-col w-[70%] lg:w-[45%] gap-2">
           <label className="text-white text-2xl font-semibold">CMS</label>
           <input
             type="text"
             placeholder="CMS ID"
             className=" h-12 rounded-[2rem] px-4 "
+            name="cms"
+            value={user.cms}
+            onChange={handleInputChangeUser}
           />
         </div>
-        <div className="flex flex-col w-[70%] gap-2">
+        <div className="flex flex-col w-[70%] lg:w-[45%] gap-2">
           <label className="text-white text-2xl font-semibold">Email</label>
           <input
             type="email"
-            placeholder="Email"
+            placeholder="NUST Email"
             className=" h-12 rounded-[2rem] px-4 "
+            name="email"
+            value={user.email}
+            onChange={handleInputChangeUser}
           />
         </div>
-        <div className="flex flex-col w-[70%] gap-2">
+        <div className="flex flex-col w-[70%] lg:w-[45%] gap-2">
           <label className="text-white text-2xl font-semibold">Password</label>
           <input
             type="password"
             placeholder="Password"
             className=" h-12 rounded-[2rem] px-4 "
+            name="password"
+            value={user.password}
+            onChange={handleInputChangeUser}
           />
         </div>
-        <div className="flex flex-col w-[70%] gap-2">
+        <div className="flex flex-col w-[70%] lg:w-[45%] gap-2">
           <label className="text-white text-2xl font-semibold">
             Confirm Password
           </label>
@@ -88,41 +238,57 @@ const Signup = () => {
             type="password"
             placeholder="Confirm Password"
             className=" h-12 rounded-[2rem] px-4 "
+            name="confirmPassword"
+            value={user.confirmPassword}
+            onChange={handleInputChangeUser}
           />
         </div>
-        <div className="flex flex-col w-[70%] gap-2">
+        <div className="flex flex-col w-[70%] lg:w-[45%] gap-2">
           <label className="text-white text-2xl font-semibold">
             Contact No.
           </label>
           <input
             type="text"
-            placeholder="03XX-XXXXXXX"
+            placeholder="03XXXXXXXXX"
             className=" h-12 rounded-[2rem] px-4 "
+            name="phone"
+            value={user.phone}
+            onChange={handleInputChangeUser}
           />
         </div>
 
-        <div className="flex gap-3">
-          <div className="flex justify-center items-center bg-[#4CE5B1] cursor-pointer rounded-lg h-10 hover:bg-black hover:text-[#4CE5B1] transition-all duration-200 ease-in-out p-4" onClick={()=>setOpenSchool(!openSchool)}>
+        <div className="flex gap-3 lg:w-[45%]">
+          <div
+            className="flex justify-center items-center bg-[#4CE5B1] cursor-pointer rounded-lg h-10 hover:bg-black hover:text-[#4CE5B1] transition-all duration-200 ease-in-out p-4 lg:ml-[25%] lg:my-10"
+            onClick={() => setOpenSchool(!openSchool)}
+          >
             Choose Your School
           </div>
           <div>
-            { openSchool && nustSchools.map((school, index) => {
-              return (
-                <div
-                  className="flex justify-center items-center bg-[#4CE5B1] cursor-pointer w-32 rounded-lg h-10 mb-1 hover:bg-black hover:text-[#4CE5B1] transition-all duration-200 ease-in-out"
-                  key={index}
-                >
-                  {school}
-                </div>
-              );
-            })}
+            {openSchool &&
+              nustSchools.map((school, index) => {
+                return (
+                  <div
+                    className={`flex justify-center items-center bg-[#4CE5B1] cursor-pointer w-32 rounded-lg h-10 mb-1 hover:bg-black hover:text-[#4CE5B1] transition-all duration-200 ease-in-out ${
+                      user.school == school && "bg-black text-[#4CE5B1]"
+                    } `}
+                    key={index}
+                    onClick={() => {
+                      setUser({ ...user, school });
+                      setOpenSchool(false);
+                    }}
+                  >
+                    {school}
+                  </div>
+                );
+              })}
           </div>
         </div>
 
-        <div className="flex items-center justify-center w-full gap-7">
+        <div className="flex items-center justify-center w-full gap-7 lg:w-[45%]">
           <label
             htmlFor="imageInput"
-            className="relative cursor-pointer bg-gray-200 text-gray-700 py-2 px-4 rounded-lg border border-gray-300 hover:bg-gray-300 transition duration-300 ease-in-out"
+            className="relative cursor-pointer bg-gray-200 text-gray-700 py-2 px-4 rounded-lg border border-gray-300 hover:bg-gray-300 transition duration-300 ease-in-out lg:my-10"
           >
             Select Image
             <input
@@ -144,66 +310,111 @@ const Signup = () => {
           )}
         </div>
 
-        <div className="flex gap-3">
-          <div className="flex justify-center items-center bg-[#4CE5B1] cursor-pointer w-32 rounded-lg h-10 hover:bg-black hover:text-[#4CE5B1] transition-all duration-200 ease-in-out" onClick={()=>setOpenRole(!openRole)}>
+        <div
+          className={`flex gap-3 lg:w-[45%] ${!user.isDriver && "lg:mr-[45%]"}`}
+        >
+          <div
+            className="flex justify-center items-center bg-[#4CE5B1] cursor-pointer w-32 rounded-lg h-10 hover:bg-black hover:text-[#4CE5B1] transition-all duration-200 ease-in-out lg:ml-[25%] lg:my-10"
+            onClick={() => setOpenRole(!openRole)}
+          >
             Choose Role
           </div>
-          {
-            openRole && <div>
-            <div className="flex justify-center items-center bg-[#4CE5B1] cursor-pointer w-32 rounded-lg h-10 mb-1 hover:bg-black hover:text-[#4CE5B1] transition-all duration-200 ease-in-out">
-              Passenger
+          {openRole && (
+            <div>
+              <div
+                className={`flex justify-center items-center bg-[#4CE5B1] cursor-pointer w-32 rounded-lg h-10 mb-1 hover:bg-black hover:text-[#4CE5B1] transition-all duration-200 ease-in-out ${
+                  !user.isDriver && "bg-black text-[#4CE5B1]"
+                }`}
+                onClick={() => {
+                  setIsCarOpen(false);
+                  setOpenRole(false);
+                  setUser({ ...user, isDriver: false });
+                }}
+              >
+                Passenger
+              </div>
+              <div
+                className={`flex justify-center items-center bg-[#4CE5B1] cursor-pointer w-32 rounded-lg h-10 hover:bg-black hover:text-[#4CE5B1] transition-all duration-200 ease-in-out ${
+                  user.isDriver && "bg-black text-[#4CE5B1]"
+                }`}
+                onClick={() => {
+                  setIsCarOpen(true);
+                  setOpenRole(false);
+                  setUser({ ...user, isDriver: true });
+                }}
+              >
+                Driver
+              </div>
             </div>
-            <div className="flex justify-center items-center bg-[#4CE5B1] cursor-pointer w-32 rounded-lg h-10 hover:bg-black hover:text-[#4CE5B1] transition-all duration-200 ease-in-out">
-              Driver
-            </div>
-          </div>
-          }
-          
+          )}
         </div>
 
-        <div className="flex flex-col w-[70%] gap-2">
-          <label className="text-white text-2xl font-semibold">
-            Car Name
-          </label>
-          <input
-            type="text"
-            placeholder="Car Name"
-            className=" h-12 rounded-[2rem] px-4 "
-          />
-        </div>
+        {isCarOpen && (
+          <>
+            <div className="flex flex-col w-[70%] lg:w-[45%] gap-2">
+              <label className="text-white text-2xl font-semibold">
+                Car Name
+              </label>
+              <input
+                type="text"
+                placeholder="Car Name"
+                className=" h-12 rounded-[2rem] px-4 "
+                name="name"
+                value={car.name}
+                onChange={handleInputChangeCar}
+              />
+            </div>
 
-        <div className="flex flex-col w-[70%] gap-2">
-          <label className="text-white text-2xl font-semibold">
-            Model
-          </label>
-          <input
-            type="text"
-            placeholder="Model"
-            className=" h-12 rounded-[2rem] px-4 "
-          />
-        </div>
-        <div className="flex flex-col w-[70%] gap-2">
-          <label className="text-white text-2xl font-semibold">
-            Registration Number
-          </label>
-          <input
-            type="text"
-            placeholder="Registration Number"
-            className=" h-12 rounded-[2rem] px-4 "
-          />
-        </div>
-        <div className="flex flex-col w-[70%] gap-2">
-          <label className="text-white text-2xl font-semibold">
-            Color
-          </label>
-          <input
-            type="text"
-            placeholder="Color"
-            className=" h-12 rounded-[2rem] px-4 "
-          />
-        </div>
-        <button className="bg-[#4CE5B1] cursor-pointer w-[70%] rounded-[2rem] h-14 hover:bg-black hover:text-[#4CE5B1] transition-all duration-200 ease-in-out mt-4">Signup</button>
-        <Link className="mb-10 text-[#4CE5B1] sm:text-white hover:text-[#4CE5B1] transition-all ease-in-out duration-150" to={'/'}>Already Have An Account?</Link>
+            <div className="flex flex-col w-[70%] lg:w-[45%] gap-2">
+              <label className="text-white text-2xl font-semibold">Model</label>
+              <input
+                type="text"
+                placeholder="Model"
+                className=" h-12 rounded-[2rem] px-4 "
+                name="model"
+                value={car.model}
+                onChange={handleInputChangeCar}
+              />
+            </div>
+            <div className="flex flex-col w-[70%] lg:w-[45%] gap-2">
+              <label className="text-white text-2xl font-semibold">
+                Registration Number
+              </label>
+              <input
+                type="text"
+                placeholder="Registration Number"
+                className=" h-12 rounded-[2rem] px-4 "
+                name="number"
+                value={car.number}
+                onChange={handleInputChangeCar}
+              />
+            </div>
+            <div className="flex flex-col w-[70%] lg:w-[45%] lg:mr-[50%] gap-2">
+              <label className="text-white text-2xl font-semibold">Color</label>
+              <input
+                type="text"
+                placeholder="Color"
+                className=" h-12 rounded-[2rem] px-4 "
+                name="color"
+                value={car.color}
+                onChange={handleInputChangeCar}
+              />
+            </div>
+          </>
+        )}
+
+        <button
+          className="bg-[#4CE5B1] cursor-pointer w-[70%] lg:w-[50%] lg:mx-[10%] rounded-[2rem] h-14 hover:bg-black hover:text-[#4CE5B1] hover:border-2 hover:border-[#4CE5B1] transition-all duration-200 ease-in-out mt-4"
+          type="submit"
+        >
+          Signup
+        </button>
+        <Link
+          className="mb-10 lg:mx-[25%] text-[#4CE5B1] sm:text-white hover:text-[#4CE5B1] transition-all ease-in-out duration-150"
+          to={"/"}
+        >
+          Already Have An Account?
+        </Link>
       </form>
     </div>
   );
