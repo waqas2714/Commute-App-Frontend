@@ -89,12 +89,21 @@ const Login = () => {
         >
           Login
         </button>
+        <div className="flex flex-col items-center gap-4 mb-10 sm:flex-row sm:justify-between sm:w-[60%]">
         <Link
-          className=" mb-10 text-[#4CE5B1] sm:text-white hover:text-[#4CE5B1] transition-all ease-in-out duration-150"
+          className="text-[#4CE5B1]  hover:text-white transition-all ease-in-out duration-150"
+          to={"/forgotPassword"}
+        >
+          Forgot Password?
+        </Link>
+        <Link
+          className="text-[#4CE5B1]  hover:text-white transition-all ease-in-out duration-150"
           to={"/signup"}
         >
           Don't Have An Account?
         </Link>
+        </div>
+        
       </form>
     </div>
   );

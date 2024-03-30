@@ -122,8 +122,6 @@ const Signup = () => {
       formData.append("school", user.school);
       formData.append("isDriver", user.isDriver);
       formData.append("cms", user.cms);
-
-      console.log(formData.get("image"));
       
       const { data } = await axios.post(
         `${backendUrl}/api/auth/signup`,
