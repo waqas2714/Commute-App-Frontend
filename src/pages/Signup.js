@@ -30,6 +30,8 @@ const Signup = () => {
   const [user, setUser] = useState(initialStateUser);
   const [car, setCar] = useState(initialStateCar);
   const [isCarOpen, setIsCarOpen] = useState(false);
+  const [chooseRole, setChooseRole] = useState("Passenger");
+  const [chooseSchool, setChooseSchool] = useState("Choose Your School");
   const navigate = useNavigate();
   const nustSchools = [
     "SEECS",
@@ -146,7 +148,8 @@ const Signup = () => {
         formData.append("carDetails", JSON.stringify(car));
       }
 
-      // Send the form data to the backend API
+      console.log(formData.get("image"));
+      
       const { data } = await axios.post(
         `${backendUrl}/api/auth/signup`,
         formData,
@@ -262,7 +265,7 @@ const Signup = () => {
             className="flex justify-center items-center bg-[#4CE5B1] cursor-pointer rounded-lg h-10 hover:bg-black hover:text-[#4CE5B1] transition-all duration-200 ease-in-out p-4 lg:ml-[25%] lg:my-10"
             onClick={() => setOpenSchool(!openSchool)}
           >
-            Choose Your School
+            {chooseSchool}
           </div>
           <div>
             {openSchool &&
@@ -270,12 +273,14 @@ const Signup = () => {
                 return (
                   <div
                     className={`flex justify-center items-center bg-[#4CE5B1] cursor-pointer w-32 rounded-lg h-10 mb-1 hover:bg-black hover:text-[#4CE5B1] transition-all duration-200 ease-in-out ${
-                      user.school == school && "bg-black text-[#4CE5B1]"
+                      user.school == school &&
+                      "bg-black text-[#4CE5B1] border-2 border-[#4CE5B1]"
                     } `}
                     key={index}
                     onClick={() => {
                       setUser({ ...user, school });
                       setOpenSchool(false);
+                      setChooseSchool(school);
                     }}
                   >
                     {school}
@@ -295,6 +300,7 @@ const Signup = () => {
               id="imageInput"
               type="file"
               accept="image/*"
+              name="image"
               className="absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer"
               onChange={handleImageChange}
             />
@@ -317,17 +323,19 @@ const Signup = () => {
             className="flex justify-center items-center bg-[#4CE5B1] cursor-pointer w-32 rounded-lg h-10 hover:bg-black hover:text-[#4CE5B1] transition-all duration-200 ease-in-out lg:ml-[25%] lg:my-10"
             onClick={() => setOpenRole(!openRole)}
           >
-            Choose Role
+            {chooseRole}
           </div>
           {openRole && (
             <div>
               <div
                 className={`flex justify-center items-center bg-[#4CE5B1] cursor-pointer w-32 rounded-lg h-10 mb-1 hover:bg-black hover:text-[#4CE5B1] transition-all duration-200 ease-in-out ${
-                  !user.isDriver && "bg-black text-[#4CE5B1]"
+                  !user.isDriver &&
+                  "bg-black text-[#4CE5B1] border-2 border-[#4CE5B1]"
                 }`}
                 onClick={() => {
                   setIsCarOpen(false);
                   setOpenRole(false);
+                  setChooseRole("Passenger");
                   setUser({ ...user, isDriver: false });
                 }}
               >
@@ -335,10 +343,12 @@ const Signup = () => {
               </div>
               <div
                 className={`flex justify-center items-center bg-[#4CE5B1] cursor-pointer w-32 rounded-lg h-10 hover:bg-black hover:text-[#4CE5B1] transition-all duration-200 ease-in-out ${
-                  user.isDriver && "bg-black text-[#4CE5B1]"
+                  user.isDriver &&
+                  "bg-black text-[#4CE5B1] border-2 border-[#4CE5B1]"
                 }`}
                 onClick={() => {
                   setIsCarOpen(true);
+                  setChooseRole("Driver");
                   setOpenRole(false);
                   setUser({ ...user, isDriver: true });
                 }}
