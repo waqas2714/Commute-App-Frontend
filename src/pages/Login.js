@@ -10,9 +10,9 @@ const initialState = {
   password: "",
   isDriver: false
 };
+
 const Login = () => {
   const [formData, setData] = useState(initialState);
-  const [openRole, setOpenRole ] = useState(false);
   const navigate = useNavigate();
 
 
@@ -91,16 +91,17 @@ const Login = () => {
             className="flex justify-center items-center bg-[#4CE5B1] cursor-pointer w-32 rounded-lg h-10 hover:bg-black hover:text-[#4CE5B1] transition-all duration-200 ease-in-out lg:ml-[25%] lg:my-10"
             onClick={() => setOpenRole(!openRole)}
           >
-            Choose Role
+            {chooseRole}
           </div>
           {openRole && (
             <div>
               <div
                 className={`flex justify-center items-center bg-[#4CE5B1] cursor-pointer w-32 rounded-lg h-10 mb-1 hover:bg-black hover:text-[#4CE5B1] transition-all duration-200 ease-in-out ${
-                  !formData.isDriver && "bg-black text-[#4CE5B1]"
+                  !formData.isDriver && "bg-black text-[#4CE5B1]  border-2 border-[#4CE5B1]"
                 }`}
                 onClick={() => {
                   setOpenRole(false);
+                  setChooseRole("Passenger");
                   setData({ ...formData, isDriver: false });
                 }}
               >
@@ -108,10 +109,11 @@ const Login = () => {
               </div>
               <div
                 className={`flex justify-center items-center bg-[#4CE5B1] cursor-pointer w-32 rounded-lg h-10 hover:bg-black hover:text-[#4CE5B1] transition-all duration-200 ease-in-out ${
-                  formData.isDriver && "bg-black text-[#4CE5B1]"
+                  formData.isDriver && "bg-black text-[#4CE5B1] border-2 border-[#4CE5B1]"
                 }`}
                 onClick={() => {
                   setOpenRole(false);
+                  setChooseRole("Driver");
                   setData({ ...formData, isDriver: true });
                 }}
               >
