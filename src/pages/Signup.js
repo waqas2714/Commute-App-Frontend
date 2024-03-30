@@ -5,13 +5,6 @@ import { toastOptions } from "..";
 import { backendUrl } from "../utils/backendUrl";
 import axios from "axios";
 
-const initialStateCar = {
-  name: "",
-  model: "",
-  number: "",
-  color: "",
-};
-
 const initialStateUser = {
   name: "",
   cms: "",
@@ -26,11 +19,8 @@ const initialStateUser = {
 const Signup = () => {
   const [image, setImage] = useState(null);
   const [openSchool, setOpenSchool] = useState(false);
-  const [openRole, setOpenRole] = useState(false);
   const [user, setUser] = useState(initialStateUser);
-  const [car, setCar] = useState(initialStateCar);
   const [isCarOpen, setIsCarOpen] = useState(false);
-  const [chooseRole, setChooseRole] = useState("Passenger");
   const [chooseSchool, setChooseSchool] = useState("Choose Your School");
   const navigate = useNavigate();
   const nustSchools = [
@@ -63,15 +53,8 @@ const Signup = () => {
     setUser({ ...user, [name]: value });
   };
 
-  const handleInputChangeCar = (e) => {
-    const { name, value } = e.target;
-    setCar({ ...car, [name]: value });
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    // Check if all fields are filled
 
     if (
       user.name === "" ||
@@ -80,12 +63,7 @@ const Signup = () => {
       user.password === "" ||
       user.confirmPassword === "" ||
       user.phone === "" ||
-      user.school === "" ||
-      (user.isDriver &&
-        (car.name === "" ||
-          car.model === "" ||
-          car.number === "" ||
-          car.color === ""))
+      user.school === ""
     ) {
       toast.error("Please fill in all fields.", toastOptions);
       return;
@@ -144,9 +122,6 @@ const Signup = () => {
       formData.append("school", user.school);
       formData.append("isDriver", user.isDriver);
       formData.append("cms", user.cms);
-      if (user.isDriver) {
-        formData.append("carDetails", JSON.stringify(car));
-      }
 
       console.log(formData.get("image"));
       
@@ -315,103 +290,6 @@ const Signup = () => {
             </div>
           )}
         </div>
-
-        <div
-          className={`flex gap-3 lg:w-[45%] ${!user.isDriver && "lg:mr-[45%]"}`}
-        >
-          <div
-            className="flex justify-center items-center bg-[#4CE5B1] cursor-pointer w-32 rounded-lg h-10 hover:bg-black hover:text-[#4CE5B1] transition-all duration-200 ease-in-out lg:ml-[25%] lg:my-10"
-            onClick={() => setOpenRole(!openRole)}
-          >
-            {chooseRole}
-          </div>
-          {openRole && (
-            <div>
-              <div
-                className={`flex justify-center items-center bg-[#4CE5B1] cursor-pointer w-32 rounded-lg h-10 mb-1 hover:bg-black hover:text-[#4CE5B1] transition-all duration-200 ease-in-out ${
-                  !user.isDriver &&
-                  "bg-black text-[#4CE5B1] border-2 border-[#4CE5B1]"
-                }`}
-                onClick={() => {
-                  setIsCarOpen(false);
-                  setOpenRole(false);
-                  setChooseRole("Passenger");
-                  setUser({ ...user, isDriver: false });
-                }}
-              >
-                Passenger
-              </div>
-              <div
-                className={`flex justify-center items-center bg-[#4CE5B1] cursor-pointer w-32 rounded-lg h-10 hover:bg-black hover:text-[#4CE5B1] transition-all duration-200 ease-in-out ${
-                  user.isDriver &&
-                  "bg-black text-[#4CE5B1] border-2 border-[#4CE5B1]"
-                }`}
-                onClick={() => {
-                  setIsCarOpen(true);
-                  setChooseRole("Driver");
-                  setOpenRole(false);
-                  setUser({ ...user, isDriver: true });
-                }}
-              >
-                Driver
-              </div>
-            </div>
-          )}
-        </div>
-
-        {isCarOpen && (
-          <>
-            <div className="flex flex-col w-[70%] lg:w-[45%] gap-2">
-              <label className="text-white text-2xl font-semibold">
-                Car Name
-              </label>
-              <input
-                type="text"
-                placeholder="Car Name"
-                className=" h-12 rounded-[2rem] px-4 "
-                name="name"
-                value={car.name}
-                onChange={handleInputChangeCar}
-              />
-            </div>
-
-            <div className="flex flex-col w-[70%] lg:w-[45%] gap-2">
-              <label className="text-white text-2xl font-semibold">Model</label>
-              <input
-                type="text"
-                placeholder="Model"
-                className=" h-12 rounded-[2rem] px-4 "
-                name="model"
-                value={car.model}
-                onChange={handleInputChangeCar}
-              />
-            </div>
-            <div className="flex flex-col w-[70%] lg:w-[45%] gap-2">
-              <label className="text-white text-2xl font-semibold">
-                Registration Number
-              </label>
-              <input
-                type="text"
-                placeholder="Registration Number"
-                className=" h-12 rounded-[2rem] px-4 "
-                name="number"
-                value={car.number}
-                onChange={handleInputChangeCar}
-              />
-            </div>
-            <div className="flex flex-col w-[70%] lg:w-[45%] lg:mr-[50%] gap-2">
-              <label className="text-white text-2xl font-semibold">Color</label>
-              <input
-                type="text"
-                placeholder="Color"
-                className=" h-12 rounded-[2rem] px-4 "
-                name="color"
-                value={car.color}
-                onChange={handleInputChangeCar}
-              />
-            </div>
-          </>
-        )}
 
         <button
           className="bg-[#4CE5B1] cursor-pointer w-[70%] lg:w-[50%] lg:mx-[10%] rounded-[2rem] h-14 hover:bg-black hover:text-[#4CE5B1] hover:border-2 hover:border-[#4CE5B1] transition-all duration-200 ease-in-out mt-4"
