@@ -5,3 +5,33 @@
 * {
     font-family: 'Mulish', 'sans-serif';
 }
+
+.nav-open {
+    transform: translateX(0);
+}
+
+.nav-close {
+    transform: translateX(-100vw);
+}
+
+.nav-link {
+    @apply cursor-pointer hover:text-xl hover:bg-[#4CE5B1] transition-all ease-out duration-150 hover:text-white p-4
+}
+
+.map-container {
+    height: 90vh;
+  }
+  
+  .sidebar {
+    background-color: rgb(35 55 75 / 90%);
+    color: #fff;
+    padding: 6px 12px;
+    font-family: monospace;
+    z-index: 1;
+    position: absolute;
+    top: 10vh;
+    left: 0;
+    margin: 12px;
+    border-radius: 4px;
+  }
+  
