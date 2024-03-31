@@ -37,7 +37,7 @@ const Login = () => {
         if (data.success) {
           localStorage.setItem('token', data.token);
           localStorage.setItem('user', JSON.stringify(data.user));
-          navigate("/home");
+          navigate("/getRide");
         } else {
           toast.error(data.error, toastOptions);
         }  

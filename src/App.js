@@ -7,10 +7,10 @@ import {
 import Chat from './pages/Chat.js';
 import Signup from './pages/Signup.js';
 import Login from './pages/Login.js';
-import Home from './pages/Home.js';
 import SignupDriver from './pages/SignupDriver.js';
 import ForgotPassword from './pages/ForgotPassword.js';
 import ResetPassword from './pages/ResetPassword.js';
+import GetRide from './pages/GetRide.js';
 
 const App = () => {
   return (
@@ -19,7 +19,7 @@ const App = () => {
         {/* <Route path='/chat' element={<Chat />} /> */}
         <Route path='/signup' element={<Signup />} />
         <Route path='/' element={<Login />} />
-        <Route path='/home' element={<Home />} />
+        <Route path='/getRide' element={<GetRide />} />
         <Route path='/signupDriver' element={<SignupDriver />} />
         <Route path='/forgotPassword' element={<ForgotPassword />} />
         <Route path='/resetPassword/:token' element={<ResetPassword />} />
