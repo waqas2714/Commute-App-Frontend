@@ -151,7 +151,7 @@ const Signup = () => {
     <div className="bg-black pt-3 ">
       <img
         src="/signupLogo.png"
-        className=" max-w-[70%] mx-auto lg:min-w-[100vh]"
+        className="max-w-[240px] sm:max-w-[70%] mx-auto md:min-w-[100vh]"
         alt="logo"
       />
       <h3 className="text-white text-center text-4xl font-semibold mb-10">

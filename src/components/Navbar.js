@@ -118,10 +118,10 @@ const Navbar = () => {
               <p>About Us</p>
               <FaInfo size={20} />
             </NavLink>
-            <btn className="cursor-pointer hover:text-xl hover:bg-red-500 transition-all ease-out duration-150 hover:text-white p-4 flex justify-between">
+            <button className="cursor-pointer hover:text-xl hover:bg-red-500 transition-all ease-out duration-150 hover:text-white p-4 flex justify-between">
               <p>Log Out</p>
               <BiPowerOff size={25} />
-            </btn>
+            </button>
           </nav>
         
     </>
