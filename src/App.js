@@ -11,6 +11,7 @@ import SignupDriver from './pages/SignupDriver.js';
 import ForgotPassword from './pages/ForgotPassword.js';
 import ResetPassword from './pages/ResetPassword.js';
 import GetRide from './pages/GetRide.js';
+import ListingDetail from './pages/ListingDetail.js';
 
 const App = () => {
   return (
@@ -23,6 +24,7 @@ const App = () => {
         <Route path='/signupDriver' element={<SignupDriver />} />
         <Route path='/forgotPassword' element={<ForgotPassword />} />
         <Route path='/resetPassword/:token' element={<ResetPassword />} />
+        <Route path='/listingDetail/:id' element={<ListingDetail />} />
       </Routes>
     </Router>
   )
