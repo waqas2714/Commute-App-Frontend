@@ -12,6 +12,7 @@ import ForgotPassword from './pages/ForgotPassword.js';
 import ResetPassword from './pages/ResetPassword.js';
 import GetRide from './pages/GetRide.js';
 import ListingDetail from './pages/ListingDetail.js';
+import MyRequests from './pages/MyRequests.js';
 
 const App = () => {
   return (
@@ -25,6 +26,7 @@ const App = () => {
         <Route path='/forgotPassword' element={<ForgotPassword />} />
         <Route path='/resetPassword/:token' element={<ResetPassword />} />
         <Route path='/listingDetail/:id' element={<ListingDetail />} />
+        <Route path='/myRequests' element={<MyRequests />} />
       </Routes>
     </Router>
   )
