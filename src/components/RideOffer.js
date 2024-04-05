@@ -25,7 +25,7 @@ const RideOffer = ({
 
   date = dateFormat(date);
   return (
-    <Link className="group flex justify-between min-h-[15vh] rounded-xl bg-[#161616] p-2 mt-1 hover:bg-[#4CE5B1] transition-all ease-in-out md:w-[30vw] duration-150 md:ml-[1vw]"
+    <Link className="group flex justify-between min-h-[15vh] rounded-xl bg-[#161616] p-2 mt-1 hover:bg-[#4CE5B1] transition-all ease-in-out md:w-[30vw] duration-150 md:ml-[1vw] text-white"
     to={`/listingDetail/${id}`}
     >
       <div className="flex justify-center items-center w-[25%]">

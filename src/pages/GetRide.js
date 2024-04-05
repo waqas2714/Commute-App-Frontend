@@ -227,7 +227,7 @@ const GetRide = () => {
 
             {
               rides.map((ride, index)=>{
-                return <RideOffer id={ride._id} image={ride.image} name={ride.driverName} car={ride.carName} date={ride.date} time={ride.time} passengers={ride.passengers.length} totalPassengers={ride.seatsAvailable} key={index} />
+                return <RideOffer id={ride._id} image={ride.image} name={ride.driverName} car={ride.carName} date={ride.date} time={ride.time} passengers={ride.passengers} totalPassengers={ride.seatsAvailable} key={index} />
               })
             }
 
