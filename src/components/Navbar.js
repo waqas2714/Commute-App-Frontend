@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 import { RxHamburgerMenu } from "react-icons/rx";
-import { FaCar, FaInfo } from "react-icons/fa";
-import { GoHistory } from "react-icons/go";
+import { FaCar, FaInfo, FaMapMarkedAlt  } from "react-icons/fa";
 import { GiArchiveRegister, GiMountainRoad } from "react-icons/gi";
 import { BiPowerOff } from "react-icons/bi";
 import { IoMdAdd } from "react-icons/io";
@@ -111,18 +110,20 @@ const Navbar = () => {
               <p>Get A Ride</p>
               <FaCar size={25} />
             </NavLink>
+
             <NavLink
               exact
-              to="/"
+              to="/myRequests"
               className={({ isActive }) =>
                 isActive
                   ? "nav-link bg-[#4CE5B1] text-white flex justify-between"
                   : "nav-link flex justify-between"
               }
             >
-              <p>History</p>
-              <GoHistory size={25} />
+              <p>My Requests</p>
+              <FaMapMarkedAlt size={25} />
             </NavLink>
+            
             {isDriver ? (
               <NavLink
                 exact
