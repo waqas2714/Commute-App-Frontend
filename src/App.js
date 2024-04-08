@@ -13,6 +13,8 @@ import ResetPassword from './pages/ResetPassword.js';
 import GetRide from './pages/GetRide.js';
 import ListingDetail from './pages/ListingDetail.js';
 import MyRequests from './pages/MyRequests.js';
+import AddRide from './pages/AddRide.js';
+import CurrentRides from './pages/CurrentRides.js';
 
 const App = () => {
   return (
@@ -27,6 +29,8 @@ const App = () => {
         <Route path='/resetPassword/:token' element={<ResetPassword />} />
         <Route path='/listingDetail/:id' element={<ListingDetail />} />
         <Route path='/myRequests' element={<MyRequests />} />
+        <Route path='/addRide' element={<AddRide />} />
+        <Route path='/currentRides' element={<CurrentRides />} />
       </Routes>
     </Router>
   )
