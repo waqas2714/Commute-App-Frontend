@@ -14,6 +14,7 @@ mapboxgl.accessToken = mapBoxToken;
 const ListingDetail = () => {
   const [details, setDetails] = useState({});
   const [isLoading, setIsLoading] = useState(true);
+  const [isPassenger, setIsPassenger] = useState(false);
   const [lng, setLng] = useState(72.992268);
   const [lat, setLat] = useState(33.642782);
   const [isRequested, setIsRequested] = useState(false);
@@ -44,8 +45,15 @@ const ListingDetail = () => {
       }
       data.listing.listing.date = dateFormat(data.listing.listing.date);
       setDetails(data.listing.listing);
-      setIsRequested(data.isRequested)
+      setIsRequested(data.isRequested);
       setIsLoading(false);
+      data.listing.listing.passengers.forEach((passenger) => {
+        // If passenger's _id matches userId, set isPassenger to true
+        if (passenger.userId == userId) {
+          setIsPassenger(true);
+          return; // Exit the loop early since we found a match
+        }
+      });
     } catch (error) {
       console.log(error);
     }
@@ -94,11 +102,14 @@ const ListingDetail = () => {
     }
   };
 
-  const makeRequest = async (e)=>{
+  const makeRequest = async (e) => {
     e.preventDefault();
     try {
-      const {data} = await axios.post(`${backendUrl}/api/rideListings/addRideRequest`, {userId, listingId : id});
-      
+      const { data } = await axios.post(
+        `${backendUrl}/api/rideListings/addRideRequest`,
+        { userId, listingId: id }
+      );
+
       if (!data.success) {
         return toast.error(data.error, toastOptions);
       }
@@ -108,7 +119,7 @@ const ListingDetail = () => {
     } catch (error) {
       console.log(error);
     }
-  }
+  };
 
   useEffect(() => {
     getData();
@@ -161,16 +172,16 @@ const ListingDetail = () => {
           essential: true, // This animation is considered essential with respect to prefers-reduced-motion
         });
       });
-    
+
       const radius = 20;
-        const bbox = [
-          lng - radius / (111.32 * Math.cos((lat * Math.PI) / 180)),
-          lat - radius / 111.32,
-          lng + radius / (111.32 * Math.cos((lat * Math.PI) / 180)),
-          lat + radius / 111.32,
-        ];
-    
-        pickupPointMap.current.setMaxBounds(bbox);
+      const bbox = [
+        lng - radius / (111.32 * Math.cos((lat * Math.PI) / 180)),
+        lat - radius / 111.32,
+        lng + radius / (111.32 * Math.cos((lat * Math.PI) / 180)),
+        lat + radius / 111.32,
+      ];
+
+      pickupPointMap.current.setMaxBounds(bbox);
     }
 
     if (
@@ -202,23 +213,19 @@ const ListingDetail = () => {
         .setLngLat([parseFloat(details.longdest), parseFloat(details.latdest)])
         .addTo(routeMap.current);
 
-        const radius = 20;
-        const bbox = [
-          lng - radius / (111.32 * Math.cos((lat * Math.PI) / 180)),
-          lat - radius / 111.32,
-          lng + radius / (111.32 * Math.cos((lat * Math.PI) / 180)),
-          lat + radius / 111.32,
-        ];
-    
-        routeMap.current.setMaxBounds(bbox);
-    
-    
+      const radius = 20;
+      const bbox = [
+        lng - radius / (111.32 * Math.cos((lat * Math.PI) / 180)),
+        lat - radius / 111.32,
+        lng + radius / (111.32 * Math.cos((lat * Math.PI) / 180)),
+        lat + radius / 111.32,
+      ];
+
+      routeMap.current.setMaxBounds(bbox);
 
       // Fetch route using Mapbox Directions API
       routeMap.current.on("load", () => {
-
         getRoute(details.pickupPoint, details.pickupPoint);
-
 
         const end = {
           type: "FeatureCollection",
@@ -250,16 +257,33 @@ const ListingDetail = () => {
       {!isLoading ? (
         <div className="mt-[10vh] pt-8 bg-black">
           <div className="relative">
-          <h1 className="text-center text-white font-extrabold text-4xl mb-4">
-            DETAILS
-          </h1>
-          {
-            isRequested ? <button className="absolute right-2 sm:right-12 top-0 text-lg fond font-semibold p-2 bg-gray-500"  disabled>Requested</button> : <button className="absolute right-6 sm:right-12 top-0 text-lg fond font-semibold p-2 bg-[#4CE5B1]" onClick={makeRequest}>Request</button>
-          }
-          
-          
+            <h1 className="text-center text-white font-extrabold text-4xl mb-4">
+              DETAILS
+            </h1>
+            {isRequested ? (
+              <button
+                className={
+                  details.driverId._id !== userId && !isPassenger
+                    ? "absolute right-2 sm:right-12 top-0 text-lg fond font-semibold p-2 bg-gray-500"
+                    : "hidden"
+                }
+                disabled
+              >
+                Requested
+              </button>
+            ) : (
+              <button
+                className={
+                  details.driverId._id !== userId && !isPassenger
+                    ? "absolute right-6 sm:right-12 top-0 text-lg fond font-semibold p-2 bg-[#4CE5B1]"
+                    : "hidden"
+                }
+                onClick={makeRequest}
+              >
+                Request
+              </button>
+            )}
           </div>
-          
 
           <div className="sm:flex sm:flex-row-reverse sm:justify-around sm:items-center">
             <div className="px-4">
@@ -289,6 +313,14 @@ const ListingDetail = () => {
               <h2 className="font-bold text-2xl text-[#4CE5B1]">School:</h2>
               <p className="text-white text-xl">{details.driverId.school}</p>
             </div>
+
+            {isPassenger && (
+              <div className="flex gap-2 items-baseline p-4 sm:w-[40vw] md:w-[30vw]">
+                <h2 className="font-bold text-2xl text-[#4CE5B1]">Contact:</h2>
+                <p className="text-white text-xl">{details.driverId.phone}</p>
+              </div>
+            )}
+
             <div className="flex gap-2 items-baseline p-4 sm:w-[40vw] md:w-[30vw]">
               <h2 className="font-bold text-2xl text-[#4CE5B1]">Car:</h2>
               <p className="text-white text-xl">
@@ -356,7 +388,6 @@ const ListingDetail = () => {
               </h2>
             )}
 
-              
             <h2 className="font-bold text-2xl p-4 text-[#4CE5B1] w-[100vw]">
               Suggested Route:
             </h2>
