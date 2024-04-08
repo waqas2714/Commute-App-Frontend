@@ -52,7 +52,7 @@ const MyRequests = () => {
         <h1 className="text-center text-white text-4xl p-4 font-bold">
           Scheduled Rides
         </h1>
-        <div className="p-4">
+        <div className="p-4 md:flex md:flex-wrap md:gap-2">
           {isLoading ? (
             <p>Loading...</p>
           ) : scheduled.length > 0 ? (
@@ -71,6 +71,7 @@ const MyRequests = () => {
                 />
               );
             })
+            
           ) : (
             <p className="text-center text-[#4CE5B1] text-xl font-semibold">No Rides Were Scheduled.</p>
           )}
@@ -79,7 +80,7 @@ const MyRequests = () => {
         <h1 className="text-center text-white text-4xl p-4 font-bold">
           My Requests
         </h1>
-        <div className="p-4">
+        <div className="p-4 md:flex md:flex-wrap md:gap-2">
           {isLoading ? (
             <p>Loading...</p>
           ) : requests.length > 0 ? (
