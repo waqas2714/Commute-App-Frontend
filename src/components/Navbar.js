@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 import { RxHamburgerMenu } from "react-icons/rx";
-import { FaCar, FaInfo, FaMapMarkedAlt  } from "react-icons/fa";
+import { FaCar, FaInfo, FaMapMarkedAlt, FaBus } from "react-icons/fa";
 import { GiArchiveRegister, GiMountainRoad } from "react-icons/gi";
 import { BiPowerOff } from "react-icons/bi";
 import { IoMdAdd } from "react-icons/io";
@@ -48,7 +48,7 @@ const Navbar = () => {
           <>
             <NavLink
               exact
-              to="/"
+              to="/addRide"
               className={({ isActive }) =>
                 isActive
                   ? "nav-link bg-[#4CE5B1] text-white flex justify-between"
@@ -60,7 +60,7 @@ const Navbar = () => {
             </NavLink>
             <NavLink
               exact
-              to="/"
+              to="/currentRides"
               className={({ isActive }) =>
                 isActive
                   ? "nav-link bg-[#4CE5B1] text-white flex justify-between"
@@ -79,20 +79,21 @@ const Navbar = () => {
                   : "nav-link flex justify-between"
               }
             >
-              <p>Previous Rides</p>
-              <GrChapterPrevious size={25} />
+              <p>Profile</p>
+              <CgProfile size={25} />
             </NavLink>
+
             <NavLink
               exact
-              to="/"
+              to="/getRide"
               className={({ isActive }) =>
                 isActive
                   ? "nav-link bg-[#4CE5B1] text-white flex justify-between"
                   : "nav-link flex justify-between"
               }
             >
-              <p>Profile</p>
-              <CgProfile size={25} />
+              <p>Passenger Mode</p>
+              <FaBus size={25} />
             </NavLink>
           </>
         ) : (
@@ -127,12 +128,13 @@ const Navbar = () => {
             {isDriver ? (
               <NavLink
                 exact
-                to="/"
+                to="/addRide"
                 className={({ isActive }) =>
                   isActive
                     ? "nav-link bg-[#4CE5B1] text-white flex justify-between"
                     : "nav-link flex justify-between"
                 }
+                onClick={()=>setIsDriverMode(true)}
               >
                 <p>Drive!</p>
                 <GiMountainRoad size={25} />
