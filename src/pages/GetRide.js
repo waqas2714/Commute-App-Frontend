@@ -218,7 +218,7 @@ const GetRide = () => {
 
         {
           areRidesFound && (
-            <div className="fixed bottom-0 right-0 z-10  bg-black w-full text-white rounded-tl-3xl rounded-tr-3xl p-2">
+            <div className="fixed bottom-0 right-0 z-10  bg-black w-full text-white rounded-tl-3xl rounded-tr-3xl p-2 pb-6">
           <h2 className="text-center p-4 text-2xl font-bold ">RIDES</h2>
           {
             isRidesOpen ? <IoIosArrowDown size={30} color="#4CE5B1" className="absolute top-4 right-5 cursor-pointer" onClick={()=>handleArrow("down")}/> : <IoIosArrowUp size={30} color="#4CE5B1" className="absolute top-4 right-5 cursor-pointer" onClick={()=>handleArrow("up")}/>
