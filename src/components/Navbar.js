@@ -13,6 +13,7 @@ const Navbar = () => {
   const [isDriver, setIsDriver] = useState(false);
   const [isDriverMode, setIsDriverMode] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const userId = JSON.parse(localStorage.getItem("user"))._id;
 
   useEffect(() => {
     setIsDriver(() => JSON.parse(localStorage.getItem("user")).isDriver);
@@ -47,7 +48,7 @@ const Navbar = () => {
           // Driver Links
           <>
             <NavLink
-              exact
+              
               to="/addRide"
               className={({ isActive }) =>
                 isActive
@@ -59,7 +60,7 @@ const Navbar = () => {
               <IoMdAdd size={25} />
             </NavLink>
             <NavLink
-              exact
+              
               to="/currentRides"
               className={({ isActive }) =>
                 isActive
@@ -71,8 +72,8 @@ const Navbar = () => {
               <RiMapPinTimeFill size={25} />
             </NavLink>
             <NavLink
-              exact
-              to="/"
+              
+              to={`/driverProfile/${userId}`}
               className={({ isActive }) =>
                 isActive
                   ? "nav-link bg-[#4CE5B1] text-white flex justify-between"
@@ -84,7 +85,7 @@ const Navbar = () => {
             </NavLink>
 
             <NavLink
-              exact
+              
               to="/getRide"
               className={({ isActive }) =>
                 isActive
@@ -100,7 +101,7 @@ const Navbar = () => {
           //Passenger Links
           <>
             <NavLink
-              exact
+              
               to="/getRide"
               className={({ isActive }) =>
                 isActive
@@ -113,7 +114,7 @@ const Navbar = () => {
             </NavLink>
 
             <NavLink
-              exact
+              
               to="/myRequests"
               className={({ isActive }) =>
                 isActive
@@ -127,7 +128,7 @@ const Navbar = () => {
             
             {isDriver ? (
               <NavLink
-                exact
+                
                 to="/addRide"
                 className={({ isActive }) =>
                   isActive
@@ -141,7 +142,7 @@ const Navbar = () => {
               </NavLink>
             ) : (
               <NavLink
-                exact
+                
                 to="/signupDriver"
                 className={({ isActive }) =>
                   isActive
@@ -159,7 +160,7 @@ const Navbar = () => {
         {/* General Links */}
 
         <NavLink
-          exact
+          
           to="/"
           className={({ isActive }) =>
             isActive
