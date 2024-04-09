@@ -15,6 +15,7 @@ import ListingDetail from './pages/ListingDetail.js';
 import MyRequests from './pages/MyRequests.js';
 import AddRide from './pages/AddRide.js';
 import CurrentRides from './pages/CurrentRides.js';
+import DriverProfile from './pages/DriverProfile.js';
 
 const App = () => {
   return (
@@ -31,6 +32,7 @@ const App = () => {
         <Route path='/myRequests' element={<MyRequests />} />
         <Route path='/addRide' element={<AddRide />} />
         <Route path='/currentRides' element={<CurrentRides />} />
+        <Route path='/driverProfile/:driverId' element={<DriverProfile />} />
       </Routes>
     </Router>
   )
