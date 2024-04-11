@@ -10,6 +10,8 @@ import { toastOptions } from "..";
 import { CiEdit } from "react-icons/ci";
 import { RxCross1 } from "react-icons/rx";
 import { MdOutlinePersonRemoveAlt1 } from "react-icons/md";
+import { GoKebabHorizontal } from "react-icons/go";
+import { IoCheckmarkDone } from "react-icons/io5";
 
 mapboxgl.accessToken = mapBoxToken;
 
@@ -21,6 +23,7 @@ const ListingDetail = () => {
   const [lat, setLat] = useState(33.642782);
   const [isRequested, setIsRequested] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [openDriverOptions, setOpenDriverOptions] = useState(false);
   const { id } = useParams();
   const userId = JSON.parse(localStorage.getItem("user"))._id;
   const pickupPointMapContainer = useRef(null);
@@ -28,7 +31,6 @@ const ListingDetail = () => {
   const routeMapContainer = useRef(null);
   const routeMap = useRef(null);
   const navigate = useNavigate();
-
 
   const dateFormat = (dateString) => {
     const date = new Date(dateString);
@@ -40,12 +42,11 @@ const ListingDetail = () => {
   };
 
   const revertDateFormat = (formattedDate) => {
-    const [day, month, year] = formattedDate.split('-');
+    const [day, month, year] = formattedDate.split("-");
     const date = new Date(`${year}-${month}-${day}`);
     const isoString = date.toISOString();
     return isoString.slice(0, isoString.length - 1);
   };
-  
 
   const getData = async () => {
     try {
@@ -138,8 +139,8 @@ const ListingDetail = () => {
     const { name, value } = e.target;
     setDetails({ ...details, [name]: value });
   };
-  
-  const handleSubmit = async (e)=>{
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       if (
@@ -168,14 +169,14 @@ const ListingDetail = () => {
         destination: details.destination,
         date: details.date,
         time: details.time,
-        seatsAvailable: details.seatsAvailable
+        seatsAvailable: details.seatsAvailable,
       };
 
       const { data } = await axios.put(
         `${backendUrl}/api/rideListings/updateListing/${id}`,
         updatedListing
       );
-  
+
       if (!data.success) {
         return toast.error(data.error, toastOptions);
       }
@@ -183,26 +184,40 @@ const ListingDetail = () => {
       toast.success("Listing Updated Successfully!", toastOptions);
 
       setIsModalOpen(false);
-
     } catch (error) {
       console.log(error);
     }
-  }
+  };
 
-
-  const removeMe = async (e)=>{
+  const removeMe = async (e) => {
     e.preventDefault();
     try {
-      const {data} = await axios.delete(`${backendUrl}/api/rideListings/removePassenger/${id}/${userId}`);
+      const { data } = await axios.delete(
+        `${backendUrl}/api/rideListings/removePassenger/${id}/${userId}`
+      );
 
       if (!data.success) {
         return toast.error(data.error, toastOptions);
       }
 
+      toast.success("You left that ride.", toastOptions);
+      navigate("/myRequests");
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
-      toast.success("You left that ride.", toastOptions)
-      navigate('/myRequests');
+  const finishRide = async ()=>{
+    try {
+      console.log(id);
+      const {data} = await axios.delete(`${backendUrl}/api/rideListings/finishRide/${id}`)
 
+      if (!data.success) {
+        return toast.error(data.error, toastOptions);
+      }
+
+      toast.success("Ride Finished!", toastOptions);
+      navigate('/addRide');
     } catch (error) {
       console.log(error);
     }
@@ -343,116 +358,134 @@ const ListingDetail = () => {
       <Navbar />
       {!isLoading ? (
         <div className="mt-[10vh] pt-8 bg-black">
-
           {/* Modal and  Backdrop for editing */}
           {isModalOpen && (
-          <div
-            className="flex justify-center items-center h-[90vh] w-[100vw] fixed top-[10vh] z-[5] bg-[rgb(0,0,0,0.7)]"
-            onClick={() => setIsModalOpen(false)}
-          >
             <div
-              className="relative bg-black p-4 h-[90%] sm:h-[65%] w-[95%] max-w-[1028px]"
-              onClick={(e) => e.stopPropagation()}
+              className="flex justify-center items-center h-[90vh] w-[100vw] fixed top-[10vh] z-[30] bg-[rgb(0,0,0,0.7)]"
+              onClick={() => setIsModalOpen(false)}
             >
-              <h1 className="text-white text-center text-2xl font-semibold">
-                Ride Info
-              </h1>
-              <RxCross1
-                size={25}
-                className="absolute top-4 right-4 text-white cursor-pointer"
-                onClick={() => setIsModalOpen(false)}
-              />
-
-              <form
-                className="flex flex-col sm:flex-row  sm:flex-wrap sm:gap-x-6 gap-3"
-                onSubmit={handleSubmit}
+              <div
+                className="relative bg-black p-4 h-[90%] sm:h-[65%] w-[95%] max-w-[1028px]"
+                onClick={(e) => e.stopPropagation()}
               >
-                <div className="sm:w-[45%]">
-                  <h2 className="text-white text-lg ">Departure</h2>
-                  <input
-                    type="text"
-                    name="departure"
-                    value={details.departure}
-                    onChange={handleInputChange}
-                    placeholder="Name Departure Location"
-                    className="w-full h-9  p-2 border-0 outline-none "
-                  />
-                </div>
-                <div className="sm:w-[45%]">
-                  <h2 className="text-white text-lg ">Destination</h2>
-                  <input
-                    type="text"
-                    name="destination"
-                    value={details.destination}
-                    onChange={handleInputChange}
-                    placeholder="Name Destination Location"
-                    className="w-full h-9  p-2 border-0 outline-none "
-                  />
-                </div>
-                <div className="sm:w-[45%]">
-                  <h2 className="text-white text-lg ">Date</h2>
-                  <input
-                    type="date"
-                    name="date"
-                    value={details.date}
-                    onChange={handleInputChange}
-                    className="w-full h-9  p-2 border-0 outline-none "
-                  />
-                </div>
-                <div className="sm:w-[45%]">
-                  <h2 className="text-white text-lg ">Time</h2>
-                  <input
-                    type="time"
-                    name="time"
-                    value={details.time}
-                    onChange={handleInputChange}
-                    className="w-full h-9  p-2 border-0 outline-none "
-                  />
-                </div>
-                <div className="sm:w-full">
-                  <h2 className="text-white text-lg ">Seats Available</h2>
-                  <input
-                    type="number"
-                    name="seatsAvailable"
-                    value={details.seatsAvailable}
-                    onChange={handleInputChange}
-                    className="w-full sm:w-[45%] h-9  p-2 border-0 outline-none "
-                    min={1}
-                    max={10}
-                  />
-                </div>
+                <h1 className="text-white text-center text-2xl font-semibold">
+                  Ride Info
+                </h1>
+                <RxCross1
+                  size={25}
+                  className="absolute top-4 right-4 text-white cursor-pointer"
+                  onClick={() => setIsModalOpen(false)}
+                />
 
-                <button
-                  className="bg-[#4CE5B1] text-black p-1 rounded-lg sm:rounded-xl text-lg hover:text-white sm:hover:px-4 transition-all ease-in-out duration-150 font-bold sm:ml-[45%] sm:px-3 mt-3"
-                  type="submit"
+                <form
+                  className="flex flex-col sm:flex-row  sm:flex-wrap sm:gap-x-6 gap-3"
+                  onSubmit={handleSubmit}
                 >
-                  Edit
-                </button>
-              </form>
-            </div>
-          </div>
-        )}
+                  <div className="sm:w-[45%]">
+                    <h2 className="text-white text-lg ">Departure</h2>
+                    <input
+                      type="text"
+                      name="departure"
+                      value={details.departure}
+                      onChange={handleInputChange}
+                      placeholder="Name Departure Location"
+                      className="w-full h-9  p-2 border-0 outline-none "
+                    />
+                  </div>
+                  <div className="sm:w-[45%]">
+                    <h2 className="text-white text-lg ">Destination</h2>
+                    <input
+                      type="text"
+                      name="destination"
+                      value={details.destination}
+                      onChange={handleInputChange}
+                      placeholder="Name Destination Location"
+                      className="w-full h-9  p-2 border-0 outline-none "
+                    />
+                  </div>
+                  <div className="sm:w-[45%]">
+                    <h2 className="text-white text-lg ">Date</h2>
+                    <input
+                      type="date"
+                      name="date"
+                      value={details.date}
+                      onChange={handleInputChange}
+                      className="w-full h-9  p-2 border-0 outline-none "
+                    />
+                  </div>
+                  <div className="sm:w-[45%]">
+                    <h2 className="text-white text-lg ">Time</h2>
+                    <input
+                      type="time"
+                      name="time"
+                      value={details.time}
+                      onChange={handleInputChange}
+                      className="w-full h-9  p-2 border-0 outline-none "
+                    />
+                  </div>
+                  <div className="sm:w-full">
+                    <h2 className="text-white text-lg ">Seats Available</h2>
+                    <input
+                      type="number"
+                      name="seatsAvailable"
+                      value={details.seatsAvailable}
+                      onChange={handleInputChange}
+                      className="w-full sm:w-[45%] h-9  p-2 border-0 outline-none "
+                      min={1}
+                      max={10}
+                    />
+                  </div>
 
+                  <button
+                    className="bg-[#4CE5B1] text-black p-1 rounded-lg sm:rounded-xl text-lg hover:text-white sm:hover:px-4 transition-all ease-in-out duration-150 font-bold sm:ml-[45%] sm:px-3 mt-3"
+                    type="submit"
+                  >
+                    Edit
+                  </button>
+                </form>
+              </div>
+            </div>
+          )}
 
           <div className="relative">
             <h1 className="text-center text-white font-extrabold text-4xl mb-4">
               DETAILS
             </h1>
-            {
-              isPassenger && <MdOutlinePersonRemoveAlt1 size={35}  className="absolute right-5 sm:right-28 top-0 text-white hover:text-red-500 transition-all ease-in-out duration-150 cursor-pointer"
-              onClick={removeMe}
+            {isPassenger && (
+              <MdOutlinePersonRemoveAlt1
+                size={35}
+                className="absolute right-5 sm:right-28 top-0 text-white hover:text-red-500 transition-all ease-in-out duration-150 cursor-pointer"
+                onClick={removeMe}
               />
-            }
-            {
-              details.driverId._id == userId && <CiEdit size={35}  className="absolute right-5 sm:right-28 top-0 text-white hover:text-[#4CE5B1] transition-all ease-in-out duration-150 cursor-pointer"
-              onClick={()=>setIsModalOpen(true)}
-              /> 
-            }
+            )}
+            {details.driverId._id == userId && (
+              <div className="absolute right-2 top-0 z-[15]">
+                <GoKebabHorizontal
+                  size={40}
+                  className="text-white hover:bg-[#4CE5B1] p-1 transition-all ease-in-out duration-150 cursor-pointer"
+                  onClick={() => setOpenDriverOptions(!openDriverOptions)}
+                />
+                {openDriverOptions && (
+                  <div className="flex flex-col absolute left-[-50px] w-fit bg-[#161616]">
+                    <CiEdit
+                      size={50}
+                      className="text-white p-2 border border-black hover:text-[#4CE5B1] transition-all ease-in-out duration-150 cursor-pointer"
+                      onClick={() => setIsModalOpen(true)}
+                    />
+                    <IoCheckmarkDone
+                      size={50}
+                      className="text-white p-2 border border-black hover:text-[#4CE5B1] transition-all ease-in-out duration-150 cursor-pointer"
+                      onClick={finishRide}
+                    />
+                  </div>
+                )}
+              </div>
+            )}
             {isRequested ? (
               <button
                 className={
                   details.driverId._id !== userId && !isPassenger
-                    ? "absolute right-2 sm:right-12 top-0 text-lg font-semibold p-2 bg-gray-500"
+                    ? "absolute right-0 sm:right-12 top-1 text-lg font-semibold p-1 bg-gray-500"
                     : "hidden"
                 }
                 disabled
@@ -463,7 +496,7 @@ const ListingDetail = () => {
               <button
                 className={
                   details.driverId._id !== userId && !isPassenger
-                    ? "absolute right-6 sm:right-12 top-0 text-lg fond font-semibold p-2 bg-[#4CE5B1]"
+                    ? "absolute right-2 sm:right-12 top-0 text-lg fond font-semibold p-2 bg-[#4CE5B1]"
                     : "hidden"
                 }
                 onClick={makeRequest}
@@ -483,7 +516,10 @@ const ListingDetail = () => {
                 className="relative h-[50vh] sm:w-[50vw] mt-4"
               ></div>
             </div>
-            <Link className="mt-4" to={`/driverProfile/${details.driverId._id}`}>
+            <Link
+              className="block mt-8"
+              to={`/driverProfile/${details.driverId._id}`}
+            >
               <img
                 src={details.driverId.image}
                 alt="driver's image"
@@ -566,10 +602,10 @@ const ListingDetail = () => {
                       photo={passenger.photo}
                       school={passenger.school}
                       isDriver={details.driverId._id == userId}
-                      listingId = {id}
-                      passengerId = {passenger.userId}
+                      listingId={id}
+                      passengerId={passenger.userId}
                       key={index}
-                      setDetails = {setDetails}
+                      setDetails={setDetails}
                     />
                   );
                 })}
@@ -581,7 +617,7 @@ const ListingDetail = () => {
             )}
 
             <h2 className="font-bold text-2xl p-4 text-[#4CE5B1] w-[100vw]">
-              Suggested Route:
+              Possible Route:
             </h2>
             <div
               className="h-[50vh] w-[100vw] md:h-[70vh] sm:mx-4"

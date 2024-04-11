@@ -9,6 +9,7 @@ import { toastOptions } from "..";
 
 const DriverProfile = () => {
   const [driver, setDriver] = useState(null);
+  const [reviews, setReview] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isPassenger, setIsPassenger] = useState(false);
   const { driverId } = useParams();
@@ -32,14 +33,36 @@ const DriverProfile = () => {
         setIsPassenger(data.isPassenger);
       }
 
-      setIsLoading(false);
     } catch (error) {
       console.log(error);
     }
   };
 
+  const getReviews = async ()=>{
+    try {
+      const {data} = await axios.get(`${backendUrl}/api/reviews/getReviewsDriver/${driverId}`);
+      if (!data.success) {
+        return toast.error(data.error, toastOptions);
+      }
+
+      setReview(data.reviews)
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  const getInfo = async () => {
+    try {
+      await Promise.all([getReviews(), getDriverInfo()]);
+      setIsLoading(false);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  
+
   useEffect(() => {
-    getDriverInfo();
+    getInfo();
   }, []);
 
   return (
@@ -131,13 +154,19 @@ const DriverProfile = () => {
               <h1 className="text-white text-3xl font-bold text-center md:mb-4">
                 Reviews
               </h1>
-
+                
               <div className="md:flex md:flex-wrap gap-[1vw]">
-                <Review />
-                <Review />
-                <Review />
-                <Review />
-                <Review />
+              {
+                  reviews.length > 0 ? (
+                    reviews.map((review, index)=>{
+                      return <Review key={index} name={review.from.username} school={review.from.school} comment={review.comment} />
+                    })
+                  )
+                  
+                  : <p className="text-center text-[#4CE5B1] text-xl font-semibold">
+                  No Rides Were Scheduled.
+                </p>
+                }
               </div>
             </div>
           )}
