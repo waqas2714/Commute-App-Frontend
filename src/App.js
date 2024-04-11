@@ -21,7 +21,7 @@ const App = () => {
   return (
     <Router>
       <Routes>
-        {/* <Route path='/chat' element={<Chat />} /> */}
+        <Route path='/chat' element={<Chat />} />
         <Route path='/signup' element={<Signup />} />
         <Route path='/' element={<Login />} />
         <Route path='/getRide' element={<GetRide />} />

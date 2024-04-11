@@ -8,6 +8,7 @@ import { IoMdAdd } from "react-icons/io";
 import { RiMapPinTimeFill } from "react-icons/ri";
 import { GrChapterPrevious } from "react-icons/gr";
 import { CgProfile } from "react-icons/cg";
+import { IoChatboxSharp } from "react-icons/io5";
 
 const Navbar = () => {
   const [isDriver, setIsDriver] = useState(false);
@@ -22,7 +23,7 @@ const Navbar = () => {
 
   return (
     <>
-      <div className="fixed top-0 w-[100vw] z-30 bg-black flex items-center justify-around pb-1">
+      <div className="fixed top-0 w-[100vw] z-50 bg-black flex items-center justify-around pb-1">
         <img src="/nameLogo.png" alt="logo" className="h-[10vh]" />
 
         <RxHamburgerMenu
@@ -36,11 +37,11 @@ const Navbar = () => {
       {isSidebarOpen && (
         <>
           {/* Backdrop */}
-          <div className="h-[90vh] w-[100vw] fixed top-[10vh] z-10 bg-[rgb(0,0,0,0.7)]" onClick={()=>setIsSidebarOpen(false)}></div>
+          <div className="h-[90vh] w-[100vw] fixed top-[10vh] z-40 bg-[rgb(0,0,0,0.7)]" onClick={()=>setIsSidebarOpen(false)}></div>
         </>
       )}
       <nav
-        className={`flex flex-col gap-4 bg-black text-[#4CE5B1] font-semibold h-[90vh] w-[50vw] min-w-[260px] md:w-[25vw] p-4 text-lg fixed top-[10vh] z-20 ${
+        className={`flex flex-col gap-4 bg-black text-[#4CE5B1] font-semibold h-[90vh] w-[50vw] min-w-[260px] md:w-[25vw] p-4 text-lg fixed top-[10vh] z-50 ${
           isSidebarOpen ? "nav-open" : "nav-close"
         }  transition-all ease-in-out duration-150`}
       >
@@ -158,9 +159,19 @@ const Navbar = () => {
         )}
 
         {/* General Links */}
-
-        <NavLink
+        <NavLink 
+          to='/chat'
+          className={({ isActive }) =>
+            isActive
+              ? "nav-link bg-[#4CE5B1] text-white flex justify-between"
+              : "nav-link flex justify-between"
+          }
+        >
           
+          <p>Chat</p>
+          <IoChatboxSharp size={25}/>
+        </NavLink>
+        <NavLink
           to="/"
           className={({ isActive }) =>
             isActive
