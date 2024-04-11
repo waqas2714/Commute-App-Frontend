@@ -3,53 +3,104 @@
 @tailwind utilities;
 
 * {
-    box-sizing: border-box;
-    padding: 0;
-    margin: 0;
-    font-family: 'Mulish', 'sans-serif';
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+  font-family: "Mulish", "sans-serif";
 }
 
 .nav-open {
-    transform: translateX(0);
+  transform: translateX(0);
 }
 
 .nav-close {
-    transform: translateX(-100vw);
+  transform: translateX(-100vw);
 }
 
 .nav-link {
-    @apply cursor-pointer hover:text-xl hover:bg-[#4CE5B1] transition-all ease-out duration-150 hover:text-white p-4
+  @apply cursor-pointer hover:text-xl hover:bg-[#4CE5B1] transition-all ease-out duration-150 hover:text-white p-4;
 }
 
 .map-container {
-    height: 90vh;
-  }
-  
-  .sidebar {
-    background-color: rgb(35 55 75 / 90%);
-    color: #fff;
-    padding: 6px 12px;
-    font-family: monospace;
-    z-index: 1;
-    position: absolute;
-    top: 10vh;
-    left: 0;
-    margin: 12px;
-    border-radius: 4px;
-  }
-  
-  .btn-style {
-    background-color: white;
-    color: black;
-    border: 1px solid black;
-    padding: 10px;
-    border-radius: 4px;
-    transition: all 0.2s ease-in-out;
-  }
-  
-  .btn-style:hover {
-    background-color: black;
-    color: #4CE5B1;
-    border: 2px solid #4CE5B1;
-  }
-  
+  height: 90vh;
+}
+
+.sidebar {
+  background-color: rgb(35 55 75 / 90%);
+  color: #fff;
+  padding: 6px 12px;
+  font-family: monospace;
+  z-index: 1;
+  position: absolute;
+  top: 10vh;
+  left: 0;
+  margin: 12px;
+  border-radius: 4px;
+}
+
+.btn-style {
+  background-color: white;
+  color: black;
+  border: 1px solid black;
+  padding: 10px;
+  border-radius: 4px;
+  transition: all 0.2s ease-in-out;
+}
+
+.btn-style:hover {
+  background-color: black;
+  color: #4ce5b1;
+  border: 2px solid #4ce5b1;
+}
+
+/* For WebKit (Chrome, Safari, Opera) */
+::-webkit-scrollbar {
+  width: 6px;
+  background-color: black;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #161616;
+}
+
+/* For Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #161616;
+}
+
+/* Customize scrollbar track */
+::-webkit-scrollbar-track {
+  background: black;
+}
+
+/* Customize scrollbar thumb on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+.sidebar-content {
+  white-space: nowrap; /* Prevent text from wrapping */
+  overflow-x: auto; /* Enable horizontal scrollbar if content overflows */
+  padding-right: 5px; /* Add some padding to prevent the scrollbar from overlapping the text */
+}
+
+/* Works in Chrome/Edge/Safari */
+.sidebar-content {
+  scrollbar-width: thin; 
+  scrollbar-color: #161616 black; /* Color of the scrollbar thumb and track */
+}
+
+::-webkit-scrollbar {
+  width: 6px; /* change this value to adjust the width */
+}
+
+/* color of the track */
+::-webkit-scrollbar-track {
+  background-color: #161616; /* change this value to adjust the color */
+}
+
+/* color of the scrollbar thumb */
+::-webkit-scrollbar-thumb {
+  background-color: #black; /* change this value to adjust the color */
+}
