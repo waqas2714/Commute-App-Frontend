@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { RxHamburgerMenu } from "react-icons/rx";
 import { FaCar, FaInfo, FaMapMarkedAlt, FaBus } from "react-icons/fa";
 import { GiArchiveRegister, GiMountainRoad } from "react-icons/gi";
@@ -15,6 +15,7 @@ const Navbar = () => {
   const [isDriverMode, setIsDriverMode] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const userId = JSON.parse(localStorage.getItem("user"))._id;
+  const navigate = useNavigate();
 
   useEffect(() => {
     setIsDriver(() => JSON.parse(localStorage.getItem("user")).isDriver);
@@ -182,7 +183,11 @@ const Navbar = () => {
           <p>About Us</p>
           <FaInfo size={20} />
         </NavLink>
-        <button className="cursor-pointer hover:text-xl hover:bg-red-500 transition-all ease-out duration-150 hover:text-white p-4 flex justify-between">
+        <button className="cursor-pointer hover:text-xl hover:bg-red-500 transition-all ease-out duration-150 hover:text-white p-4 flex justify-between" onClick={(e)=>{
+          e.preventDefault();
+          localStorage.clear();
+          navigate('/');
+        }}> 
           <p>Log Out</p>
           <BiPowerOff size={25} />
         </button>
