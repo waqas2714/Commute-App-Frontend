@@ -8,6 +8,7 @@ import { MdSend } from "react-icons/md";
 import axios from "axios";
 import { toastOptions } from "..";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 const socket = io(backendUrl);
 const Chat = () => {
@@ -24,6 +25,8 @@ const Chat = () => {
   const userId = JSON.parse(localStorage.getItem("user"))._id;
   const username = JSON.parse(localStorage.getItem("user")).username;
   const chatRef = useRef(null)
+  const navigate = useNavigate();
+
   const handleSubmit = async (e) => {
     e.stopPropagation();
     e.preventDefault();
@@ -75,6 +78,39 @@ const Chat = () => {
       isListeningRef.current = true;
     }
   });
+
+  useEffect(() => {
+    const checkToken = async () => {
+      try {
+        // Get token from localStorage
+        const token = localStorage.getItem("token");
+
+        if (!token) {
+          navigate("/");
+          localStorage.clear();
+          return toast.error("Please Log In.", toastOptions);
+        }
+        // Call API to verify token
+        const response = await axios.get(`${backendUrl}/api/auth/verifyToken`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        // If response is false, redirect to "/" and toast error
+        if (!response.data) {
+          navigate("/");
+          localStorage.clear();
+          return toast.error("Session Expired. Please Log In Again.", toastOptions);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    checkToken(); // Call the function
+  }, []);
+
 
   useEffect(() => {
     getChatTags();

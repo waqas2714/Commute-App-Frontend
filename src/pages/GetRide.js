@@ -8,6 +8,7 @@ import { IoIosArrowDown, IoIosArrowUp  } from "react-icons/io";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { toastOptions } from "..";
+import { useNavigate } from "react-router-dom";
 
 mapboxgl.accessToken = mapBoxToken;
 
@@ -27,6 +28,7 @@ const GetRide = () => {
   const [isReadyToFind, setIsReadyToFind] = useState(false);
   const [areRidesFound, setAreRidesFound] = useState(false);
   const [rides, setRides] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(()=>localStorage.setItem("isDriverMode", JSON.stringify(false)));
 
@@ -136,6 +138,38 @@ const GetRide = () => {
       setIsReadyToFind(false);
     }
   }, [isDepartureSet, isDestinationSet]);
+  
+  useEffect(() => {
+    const checkToken = async () => {
+      try {
+        // Get token from localStorage
+        const token = localStorage.getItem("token");
+
+        if (!token) {
+          navigate("/");
+          localStorage.clear();
+          return toast.error("Please Log In.", toastOptions);
+        }
+        // Call API to verify token
+        const response = await axios.get(`${backendUrl}/api/auth/verifyToken`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        // If response is false, redirect to "/" and toast error
+        if (!response.data) {
+          navigate("/");
+          localStorage.clear();
+          return toast.error("Session Expired. Please Log In Again.", toastOptions);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    checkToken(); // Call the function
+  }, []);
 
   const handleDepartureButtonClick = (e) => {
     e.preventDefault();
@@ -156,6 +190,7 @@ const GetRide = () => {
       setIsRidesOpen(false);
     }
   }
+
 
   const findRides = async (e) => {
     e.preventDefault();

@@ -6,13 +6,14 @@ import { toast } from "react-toastify";
 import RideOffer from "../components/RideOffer";
 import ReviewUser from "../components/ReviewUser";
 import { toastOptions } from "..";
+import { useNavigate } from "react-router-dom";
 
 const MyRequests = () => {
   const [requests, setRequests] = useState([]);
   const [scheduled, setScheduled] = useState([]);
   const [reviews, setReviews] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-
+  const navigate = useNavigate();
   const userId = JSON.parse(localStorage.getItem("user"))._id;
 
   const getPassengerRequests = async () => {
@@ -79,6 +80,39 @@ const MyRequests = () => {
       console.log(error);
     }
   };
+
+  useEffect(() => {
+    const checkToken = async () => {
+      try {
+        // Get token from localStorage
+        const token = localStorage.getItem("token");
+
+        if (!token) {
+          navigate("/");
+          localStorage.clear();
+          return toast.error("Please Log In.", toastOptions);
+        }
+        // Call API to verify token
+        const response = await axios.get(`${backendUrl}/api/auth/verifyToken`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        // If response is false, redirect to "/" and toast error
+        if (!response.data) {
+          navigate("/");
+          localStorage.clear();
+          return toast.error("Session Expired. Please Log In Again.", toastOptions);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    checkToken(); // Call the function
+  }, []);
+
 
   useEffect(() => {
     getRequests();

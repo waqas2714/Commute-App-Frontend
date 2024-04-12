@@ -3,7 +3,7 @@ import Navbar from "../components/Navbar";
 import Review from "../components/Review";
 import axios from "axios";
 import { backendUrl } from "../utils/backendUrl";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { toastOptions } from "..";
 
@@ -14,6 +14,7 @@ const DriverProfile = () => {
   const [isPassenger, setIsPassenger] = useState(false);
   const { driverId } = useParams();
   const userId = JSON.parse(localStorage.getItem("user"))._id;
+  const navigate = useNavigate();
 
   const getDriverInfo = async () => {
     try {
@@ -60,6 +61,39 @@ const DriverProfile = () => {
     }
   };
   
+
+  useEffect(() => {
+    const checkToken = async () => {
+      try {
+        // Get token from localStorage
+        const token = localStorage.getItem("token");
+
+        if (!token) {
+          navigate("/");
+          localStorage.clear();
+          return toast.error("Please Log In.", toastOptions);
+        }
+        // Call API to verify token
+        const response = await axios.get(`${backendUrl}/api/auth/verifyToken`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        // If response is false, redirect to "/" and toast error
+        if (!response.data) {
+          navigate("/");
+          localStorage.clear();
+          return toast.error("Session Expired. Please Log In Again.", toastOptions);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    checkToken(); // Call the function
+  }, []);
+
 
   useEffect(() => {
     getInfo();

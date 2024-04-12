@@ -6,10 +6,12 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { toastOptions } from "..";
 import { backendUrl } from "../utils/backendUrl";
+import { useNavigate } from "react-router-dom";
 
 const CurrentRides = () => {
   const [rideRequests, setRideRequests] = useState([]);
   const [rideListings, setRideListings] = useState([]);
+  const navigate = useNavigate();
 
   const driverId = JSON.parse(localStorage.getItem("user"))._id;
 
@@ -45,6 +47,39 @@ const CurrentRides = () => {
     }
   };
   
+  useEffect(() => {
+    const checkToken = async () => {
+      try {
+        // Get token from localStorage
+        const token = localStorage.getItem("token");
+
+        if (!token) {
+          navigate("/");
+          localStorage.clear();
+          return toast.error("Please Log In.", toastOptions);
+        }
+        // Call API to verify token
+        const response = await axios.get(`${backendUrl}/api/auth/verifyToken`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        // If response is false, redirect to "/" and toast error
+        if (!response.data) {
+          navigate("/");
+          localStorage.clear();
+          return toast.error("Session Expired. Please Log In Again.", toastOptions);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    checkToken(); // Call the function
+  }, []);
+
+
   useEffect(() => {
     // Call both API functions when the component mounts
     fetchRideRequests();
