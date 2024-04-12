@@ -7,6 +7,8 @@
   padding: 0;
   margin: 0;
   font-family: "Mulish", "sans-serif";
+  scrollbar-width: thin; 
+  scrollbar-color: #161616 #161616; /* Color of the scrollbar thumb and track */
 }
 
 .nav-open {
@@ -53,30 +55,27 @@
   border: 2px solid #4ce5b1;
 }
 
-/* For WebKit (Chrome, Safari, Opera) */
-::-webkit-scrollbar {
-  width: 6px;
-  background-color: black;
+@media (min-width: 880px) {
+  .chatbox {
+    width: calc(100vw - 305px - 60px);
+  }
 }
 
-::-webkit-scrollbar-thumb {
-  background-color: #161616;
+
+@media (min-width: 768px) {
+  .chatbox-translate {
+    transform: translateX(310px) translateY(7px);
+  }
 }
 
-/* For Firefox */
-* {
-  scrollbar-width: thin;
-  scrollbar-color: #161616;
-}
+@media (min-width: 768px) and (max-width: 1012px) {
+  .chatbox-translate {
+    transform: translateX(300px) translateY(7px);
+  }
 
-/* Customize scrollbar track */
-::-webkit-scrollbar-track {
-  background: black;
-}
-
-/* Customize scrollbar thumb on hover */
-::-webkit-scrollbar-thumb:hover {
-  background: #555;
+  .chatbox {
+    width: calc(100vw - 310px - 50px);
+  }
 }
 
 .sidebar-content {
@@ -85,22 +84,3 @@
   padding-right: 5px; /* Add some padding to prevent the scrollbar from overlapping the text */
 }
 
-/* Works in Chrome/Edge/Safari */
-.sidebar-content {
-  scrollbar-width: thin; 
-  scrollbar-color: #161616 black; /* Color of the scrollbar thumb and track */
-}
-
-::-webkit-scrollbar {
-  width: 6px; /* change this value to adjust the width */
-}
-
-/* color of the track */
-::-webkit-scrollbar-track {
-  background-color: #161616; /* change this value to adjust the color */
-}
-
-/* color of the scrollbar thumb */
-::-webkit-scrollbar-thumb {
-  background-color: #black; /* change this value to adjust the color */
-}
