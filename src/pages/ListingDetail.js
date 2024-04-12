@@ -108,9 +108,9 @@ const ListingDetail = () => {
           "line-cap": "round",
         },
         paint: {
-          "line-color": "#3887be",
-          "line-width": 5,
-          "line-opacity": 0.75,
+          "line-color": "#4CE5B1",
+          "line-width": 4,
+          "line-opacity": 1,
         },
       });
     }
@@ -236,7 +236,7 @@ const ListingDetail = () => {
     ) {
       pickupPointMap.current = new mapboxgl.Map({
         container: pickupPointMapContainer.current,
-        style: "mapbox://styles/mapbox/streets-v11",
+        style: 'mapbox://styles/mapbox/dark-v10',
         center: [
           parseFloat(details.pickupPoint.long),
           parseFloat(details.pickupPoint.lat),
@@ -244,7 +244,9 @@ const ListingDetail = () => {
         zoom: 12,
       });
 
-      new mapboxgl.Marker()
+      new mapboxgl.Marker({
+        color: 'black' 
+      })
         .setLngLat([
           parseFloat(details.pickupPoint.long),
           parseFloat(details.pickupPoint.lat),
@@ -294,7 +296,7 @@ const ListingDetail = () => {
     ) {
       routeMap.current = new mapboxgl.Map({
         container: routeMapContainer.current,
-        style: "mapbox://styles/mapbox/streets-v11",
+        style: 'mapbox://styles/mapbox/dark-v10',
         center: [
           parseFloat(details.pickupPoint.long),
           parseFloat(details.pickupPoint.lat),
@@ -303,15 +305,20 @@ const ListingDetail = () => {
       });
 
       // Add marker for pickup point
-      new mapboxgl.Marker()
+      new mapboxgl.Marker({
+        color : 'black'
+      })
         .setLngLat([
           parseFloat(details.pickupPoint.long),
           parseFloat(details.pickupPoint.lat),
         ])
         .addTo(routeMap.current);
+      
 
       // Add marker for destination
-      new mapboxgl.Marker()
+      new mapboxgl.Marker({
+      color : "gray"  
+      })
         .setLngLat([parseFloat(details.longdest), parseFloat(details.latdest)])
         .addTo(routeMap.current);
 
@@ -458,7 +465,7 @@ const ListingDetail = () => {
                 onClick={removeMe}
               />
             )}
-            {details.driverId._id == userId && (
+            {details.driverId._id === userId && (
               <div className="absolute right-2 top-0 z-[15]">
                 <GoKebabHorizontal
                   size={40}

@@ -54,7 +54,7 @@ const AddRide = () => {
 
     map.current = new mapboxgl.Map({
       container: mapContainer.current,
-      style: "mapbox://styles/mapbox/streets-v12",
+      style: 'mapbox://styles/mapbox/dark-v10',
       center: [lng, lat],
       zoom: zoom,
     });
@@ -82,7 +82,7 @@ const AddRide = () => {
         }
       } else {
         if (!destinationMarker.current) {
-          destinationMarker.current = new mapboxgl.Marker({ color: "blue" })
+          destinationMarker.current = new mapboxgl.Marker({ color: "gray" })
             .setLngLat([clickedLngLat.lng, clickedLngLat.lat])
             .addTo(map.current);
           setIsDestinationSet([clickedLngLat.lng, clickedLngLat.lat]);
@@ -119,7 +119,7 @@ const AddRide = () => {
         }
       } else {
         if (!destinationMarker.current) {
-          destinationMarker.current = new mapboxgl.Marker({ color: "blue" }) // Changed color to blue
+          destinationMarker.current = new mapboxgl.Marker({ color: "gray" }) // Changed color to blue
             .setLngLat(e.result.center)
             .addTo(map.current);
           setIsDestinationSet(e.result.center);
@@ -224,9 +224,9 @@ const AddRide = () => {
           "line-cap": "round",
         },
         paint: {
-          "line-color": "#3887be",
-          "line-width": 5,
-          "line-opacity": 0.75,
+          "line-color": "#4CE5B1",
+          "line-width":4,
+          "line-opacity": 1,
         },
       });
     }

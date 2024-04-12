@@ -37,7 +37,7 @@ const GetRide = () => {
 
     map.current = new mapboxgl.Map({
       container: mapContainer.current,
-      style: "mapbox://styles/mapbox/streets-v12",
+      style: 'mapbox://styles/mapbox/dark-v10',
       center: [lng, lat],
       zoom: zoom,
     });
@@ -64,7 +64,7 @@ const GetRide = () => {
         }
       } else {
         if (!destinationMarker.current) {
-          destinationMarker.current = new mapboxgl.Marker({ color: "blue" })
+          destinationMarker.current = new mapboxgl.Marker({ color: "gray" })
             .setLngLat([clickedLngLat.lng, clickedLngLat.lat])
             .addTo(map.current);
           setIsDestinationSet(true);
@@ -99,7 +99,7 @@ const GetRide = () => {
         }
       } else {
         if (!destinationMarker.current) {
-          destinationMarker.current = new mapboxgl.Marker({ color: "blue" }) // Changed color to blue
+          destinationMarker.current = new mapboxgl.Marker({ color: "#4CE5B1" }) // Changed color to #4CE5B1
             .setLngLat(e.result.center)
             .addTo(map.current);
           setIsDestinationSet(true);
