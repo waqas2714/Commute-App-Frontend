@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { toastOptions } from "..";
@@ -47,8 +47,45 @@ const Login = () => {
     
   };
 
+  const directLogIn = async ()=>{
+    const token = localStorage.getItem("token");
+    if (token) {
+      try {
+        // Call API to verify token
+        const response = await axios.get(`${backendUrl}/api/auth/verifyToken`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        // If response is false, redirect to "/" and toast error
+        if (response.data) {
+          navigate("/getRide");
+        } else {
+          localStorage.removeItem("token");
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  }
+
+  useEffect(()=>{
+    const token = localStorage.getItem("token");
+    if(!navigator.onLine){
+      if (token) {
+        navigate("/getRide");
+      } else {
+        toast.error("You do not have an internet connection.", toastOptions);
+      }
+    } else {
+      directLogIn();
+    }
+    
+  },[])
+
   return (
-    <div className="bg-black pt-3 ">
+    <div className="bg-black pt-3">
       <img
         src="/mainLogo.png"
         className="max-w-[240px] sm:max-w-[70%] mx-auto md:min-w-[100vh]"

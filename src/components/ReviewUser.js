@@ -52,7 +52,7 @@ const ReviewUser = ({ image, driverName, from, to, reviewId, setReviews }) => {
         </div>
       )}
       {/* sm:w-[47vw] md:w-[31vw] lg:w-[23vw] */}
-      <div className="flex bg-[#161616] w-full sm:w-[350px] text-white p-2 mt-2 hover:bg-[#4CE5B1] group transition-all ease-in-out duration-150" onClick={()=>setIsReviewModalOpen(true)}>
+      <div className="flex bg-[#161616] w-full sm:w-[350px] text-white p-2 mt-2 hover:bg-[#4CE5B1] group transition-all ease-in-out duration-150" onClick={()=>{navigator.onLine ? setIsReviewModalOpen(true) : toast.error("Please add your review when you are online.", toastOptions)}}>
         <img
           src={image}
           alt="driver's photo"

@@ -17,15 +17,25 @@ const CurrentRides = () => {
 
   const fetchRideRequests = async () => {
     try {
-      const { data } = await axios.get(
-        `${backendUrl}/api/rideListings/myRideRequests/${driverId}`
-      );
-  
-      if (!data.success) {
-        return toast.error(data.error, toastOptions);
+      if (navigator.onLine) {
+        const { data } = await axios.get(
+          `${backendUrl}/api/rideListings/myRideRequests/${driverId}`
+        );
+    
+        if (!data.success) {
+          return toast.error(data.error, toastOptions);
+        }
+    
+        localStorage.setItem("rideRequests", JSON.stringify(data.rideRequests));
+        setRideRequests(data.rideRequests);
+      } else {
+        const savedData = localStorage.getItem("rideRequests");
+        if (savedData) {
+          setRideRequests(JSON.parse(savedData));
+        } else {
+          toast.error("You are offline and there is no saved data.", toastOptions);
+        }
       }
-  
-      setRideRequests(data.rideRequests);
     } catch (error) {
       console.log(error);
     }
@@ -33,19 +43,30 @@ const CurrentRides = () => {
   
   const fetchRideListings = async () => {
     try {
-      const { data } = await axios.get(
-        `${backendUrl}/api/rideListings/myListings/${driverId}`
-      );
-  
-      if (!data.success) {
-        return toast.error(data.error, toastOptions);
+      if (navigator.onLine) {
+        const { data } = await axios.get(
+          `${backendUrl}/api/rideListings/myListings/${driverId}`
+        );
+    
+        if (!data.success) {
+          return toast.error(data.error, toastOptions);
+        }
+    
+        localStorage.setItem("rideListings", JSON.stringify(data.listings));
+        setRideListings(data.listings);
+      } else {
+        const savedData = localStorage.getItem("rideListings");
+        if (savedData) {
+          setRideListings(JSON.parse(savedData));
+        } else {
+          toast.error("You are offline and there is no saved data.", toastOptions);
+        }
       }
-  
-      setRideListings(data.listings);
+      
     } catch (error) {
       console.log(error);
     }
-  };
+  };  
   
   useEffect(() => {
     const checkToken = async () => {

@@ -24,29 +24,33 @@ const RideListing = ({ id, from, to, date, time, setRideListings }) => {
   const removeListing = async (e) => {
     e.preventDefault(); 
     e.stopPropagation(); 
-
-    try {
-      const { data } = await axios.delete(
-        `${backendUrl}/api/rideListings/removeListing/${id}`
-      );
-
-      if (!data.success) {
-        return toast.error(data.error, toastOptions);
+    if (navigator.onLine) {
+      try {
+        const { data } = await axios.delete(
+          `${backendUrl}/api/rideListings/removeListing/${id}`
+        );
+  
+        if (!data.success) {
+          return toast.error(data.error, toastOptions);
+        }
+  
+        setRideListings((prevRideListings) =>
+          prevRideListings.filter(
+            (listing) => listing._id !== data.removedListing
+          )
+        );
+      } catch (error) {
+        console.log(error);
       }
-
-      setRideListings((prevRideListings) =>
-        prevRideListings.filter(
-          (listing) => listing._id !== data.removedListing
-        )
-      );
-    } catch (error) {
-      console.log(error);
+    } else {
+      toast.error("Please try again when you are online.", toastOptions);
     }
+    
   };
 
   return (
     <Link
-      className="flex gap-x-2 justify-between min-h-[15vh] rounded-xl bg-[#161616] p-2 mt-1 transition-all ease-in-out w-[45vw] sm:w-[30vw] duration-150 text-white"
+      className="flex gap-x-2 justify-between min-h-[15vh] rounded-xl bg-[#161616] p-2 mt-1 transition-all ease-in-out w-[100vw] sm:w-[30vw] duration-150 text-white"
       to={`/listingDetail/${id}`}
     >
       <div className="w-[70%] flex flex-wrap gap-x-3 ">

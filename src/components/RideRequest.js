@@ -32,39 +32,44 @@ const RideRequest = ({
   date = dateFormat(date);
 
   const action = async (decision) => {
-    try {
-      if (decision === "reject") {
-        const { data } = await axios.delete(
-          `${backendUrl}/api/rideListings/rejectRideRequest/${rideRequestId}`
-        );
-
-        if (!data.success) {
-          return toast.error(
-            "Could not reject the request. Please try again.",
-            toastOptions
+    if (navigator.onLine) {
+      try {
+        if (decision === "reject") {
+          const { data } = await axios.delete(
+            `${backendUrl}/api/rideListings/rejectRideRequest/${rideRequestId}`
+          );
+  
+          if (!data.success) {
+            return toast.error(
+              "Could not reject the request. Please try again.",
+              toastOptions
+            );
+          }
+  
+          // Remove the object with _id equal to rideRequestId from the state
+          setRideRequests((prevRideRequests) =>
+            prevRideRequests.filter((request) => request._id !== rideRequestId)
+          );
+        } else {
+          const { data } = await axios.get(
+            `${backendUrl}/api/rideListings/acceptRideRequest/${rideRequestId}`
+          );
+  
+          if (!data.success) {
+            return toast.error(data.error, toastOptions);
+          }
+  
+          setRideRequests((prevRideRequests) =>
+            prevRideRequests.filter((request) => request._id !== rideRequestId)
           );
         }
-
-        // Remove the object with _id equal to rideRequestId from the state
-        setRideRequests((prevRideRequests) =>
-          prevRideRequests.filter((request) => request._id !== rideRequestId)
-        );
-      } else {
-        const { data } = await axios.get(
-          `${backendUrl}/api/rideListings/acceptRideRequest/${rideRequestId}`
-        );
-
-        if (!data.success) {
-          return toast.error(data.error, toastOptions);
-        }
-
-        setRideRequests((prevRideRequests) =>
-          prevRideRequests.filter((request) => request._id !== rideRequestId)
-        );
+      } catch (error) {
+        console.log(error);
       }
-    } catch (error) {
-      console.log(error);
+    } else {
+      toast.error("Please try again when you are online.", toastOptions);
     }
+    
   };
   return (
     <div className="flex gap-x-2 justify-between min-h-[15vh] rounded-xl bg-[#161616] p-2 mt-1 transition-all ease-in-out sm:w-[45vw] md:w-[30vw] duration-150 text-white">

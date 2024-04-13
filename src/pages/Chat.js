@@ -67,6 +67,14 @@ const Chat = () => {
     }
   };
 
+  useEffect(()=>{
+    if(!navigator.onLine){
+      navigate("/myRequests");
+      toast.error("You do not have an internet connection.", toastOptions);
+    }
+  },[])
+
+
   useEffect(() => {
     if (!isListeningRef.current) {
       socket.on("msg-recieve", (msg) => {

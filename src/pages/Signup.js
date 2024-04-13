@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { toastOptions } from "..";
@@ -146,6 +146,12 @@ const Signup = () => {
       console.error("Error:", error);
     }
   };
+
+  useEffect(()=>{
+    if(!navigator.onLine){
+      toast.error("You do not have an internet connection.", toastOptions);
+    }
+  },[])
 
   return (
     <div className="bg-black pt-3 ">

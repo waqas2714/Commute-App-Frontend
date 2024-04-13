@@ -43,6 +43,14 @@ const GetRide = () => {
       west: 72.8055335597914  
     }
   }
+
+  useEffect(()=>{
+    if(!navigator.onLine){
+      navigate("/myRequests");
+      toast.error("You do not have an internet connection.", toastOptions);
+    }
+  },[])
+
   useEffect(()=>localStorage.setItem("isDriverMode", JSON.stringify(false)));
 
   useEffect(() => {

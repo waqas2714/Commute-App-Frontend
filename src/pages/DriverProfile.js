@@ -60,7 +60,20 @@ const DriverProfile = () => {
       console.log(error);
     }
   };
+
   
+  useEffect(()=>{
+    if(!navigator.onLine){
+      const mode = JSON.parse(localStorage.getItem("isDriverMode"));
+      if (mode) {
+        navigate('/currentRides');
+      } else {
+        navigate("/myRequests");
+      }
+      toast.error("You do not have an internet connection.", toastOptions);
+    }
+  },[])
+
 
   useEffect(() => {
     const checkToken = async () => {

@@ -18,52 +18,83 @@ const MyRequests = () => {
 
   const getPassengerRequests = async () => {
     try {
-      const { data } = await axios.get(
-        `${backendUrl}/api/rideListings/passengerRideRequests/${userId}`
-      );
-      if (!data.success) {
-        return toast.error(
-          "An error occurred while getting your requests, please try again later", toastOptions
+      if (navigator.onLine) {
+        const { data } = await axios.get(
+          `${backendUrl}/api/rideListings/passengerRideRequests/${userId}`
         );
+        if (!data.success) {
+          return toast.error(
+            "An error occurred while getting your requests, please try again later", toastOptions
+          );
+        }
+        localStorage.setItem("passengerRequests", JSON.stringify(data.rideRequests));
+        setRequests(data.rideRequests);
+      } else {
+        const savedData = localStorage.getItem("passengerRequests");
+        if (savedData) {
+          setRequests(JSON.parse(savedData));
+        } else {
+          toast.error("You are offline and there is no saved data.", toastOptions);
+        }
       }
-      setRequests(data.rideRequests);
     } catch (error) {
       console.log(error);
     }
   };
-
+  
   const getScheduledRides = async () => {
     try {
-      const res = await axios.get(
-        `${backendUrl}/api/rideListings/getScheduledRidesPassenger/${userId}`
-      );
-      if (!res.data.success) {
-        return toast.error(
-          "An error occurred while getting your scheduled rides, please try again later", toastOptions
+      if (navigator.onLine) {
+        const res = await axios.get(
+          `${backendUrl}/api/rideListings/getScheduledRidesPassenger/${userId}`
         );
+        if (!res.data.success) {
+          return toast.error(
+            "An error occurred while getting your scheduled rides, please try again later", toastOptions
+          );
+        }
+        localStorage.setItem("scheduledRides", JSON.stringify(res.data.rideListings));
+        setScheduled(res.data.rideListings);
+      } else {
+        const savedData = localStorage.getItem("scheduledRides");
+        if (savedData) {
+          setScheduled(JSON.parse(savedData));
+        } else {
+          toast.error("You are offline and there is no saved data.", toastOptions);
+        }
       }
-      setScheduled(res.data.rideListings);
     } catch (error) {
       console.log(error);
     }
   };
-
+  
   const getUserReviews = async () => {
     try {
-      const resReviews = await axios.get(
-        `${backendUrl}/api/reviews/getReviewsUser/${userId}`
-      );
-
-      if (!resReviews.data.success) {
-        return toast.error(
-          "An error occurred while getting your reviews, please try again later", toastOptions
+      if (navigator.onLine) {
+        const resReviews = await axios.get(
+          `${backendUrl}/api/reviews/getReviewsUser/${userId}`
         );
+  
+        if (!resReviews.data.success) {
+          return toast.error(
+            "An error occurred while getting your reviews, please try again later", toastOptions
+          );
+        }
+        localStorage.setItem("userReviews", JSON.stringify(resReviews.data.reviews));
+        setReviews(resReviews.data.reviews);
+      } else {
+        const savedData = localStorage.getItem("userReviews");
+        if (savedData) {
+          setReviews(JSON.parse(savedData));
+        } else {
+          toast.error("You are offline and there is no saved data.", toastOptions);
+        }
       }
-      setReviews(resReviews.data.reviews);
     } catch (error) {
       console.log(error);
     }
   };
+  
 
   const getRequests = async () => {
     try {

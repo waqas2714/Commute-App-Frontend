@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { backendUrl } from "../utils/backendUrl";
@@ -33,6 +33,14 @@ const ForgotPassword = () => {
             console.log(error);
         }
     }
+
+    useEffect(()=>{
+      if(!navigator.onLine){
+        toast.error("You do not have an internet connection.", toastOptions);
+      }
+    },[])
+
+    
   return (
     <div className="bg-black min-h-screen pb-8">
       <img

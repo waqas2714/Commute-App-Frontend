@@ -60,6 +60,14 @@ const AddRide = () => {
   const navigate = useNavigate();
   const driverId = JSON.parse(localStorage.getItem("user"))._id;
 
+  useEffect(()=>{
+    if(!navigator.onLine){
+      navigate("/currentRides");
+      toast.error("You do not have an internet connection.", toastOptions);
+    }
+  },[])
+
+
   useEffect(() => localStorage.setItem("isDriverMode", JSON.stringify(true)));
 
   useEffect(() => {

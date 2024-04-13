@@ -6,6 +6,7 @@ import "./index.css";
 import App from "./App";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import swDev from "./swDev";
 
 export const toastOptions = {
   position: "top-right",
@@ -25,3 +26,6 @@ root.render(
     <ToastContainer />
   </React.StrictMode>
 );
+
+
+swDev();

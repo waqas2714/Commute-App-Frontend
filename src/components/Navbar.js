@@ -172,7 +172,7 @@ const Navbar = () => {
           <p>Chat</p>
           <IoChatboxSharp size={25}/>
         </NavLink>
-        <NavLink
+        {/* <NavLink
           to="/"
           className={({ isActive }) =>
             isActive
@@ -182,7 +182,7 @@ const Navbar = () => {
         >
           <p>About Us</p>
           <FaInfo size={20} />
-        </NavLink>
+        </NavLink> */}
         <button className="cursor-pointer hover:text-xl hover:bg-red-500 transition-all ease-out duration-150 hover:text-white p-4 flex justify-between" onClick={(e)=>{
           e.preventDefault();
           localStorage.clear();
