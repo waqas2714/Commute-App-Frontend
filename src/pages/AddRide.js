@@ -3,11 +3,15 @@ import Navbar from "../components/Navbar";
 import { backendUrl, mapBoxToken } from "../utils/backendUrl";
 import { RxCross1 } from "react-icons/rx";
 import mapboxgl from "mapbox-gl";
-import MapboxGeocoder from "@mapbox/mapbox-gl-geocoder";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { toastOptions } from "..";
 import { useNavigate } from "react-router-dom";
+import PlacesAutocomplete, {
+  geocodeByAddress,
+  getLatLng,
+} from "react-places-autocomplete";
+import { IoSearchOutline } from "react-icons/io5";
 
 mapboxgl.accessToken = mapBoxToken;
 
@@ -41,6 +45,17 @@ const AddRide = () => {
   const [isReadyToAdd, setIsReadyToAdd] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [listingData, setListingData] = useState(initialState);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [address, setAddress] = useState("");
+  const searchOptions = {    
+    locationRestriction: {
+      north: 33.72779793901814, 
+      south: 33.50455160136669, 
+      east: 73.2195682300637, 
+      west: 72.8055335597914  
+    }
+  }
+  
 
   const navigate = useNavigate();
   const driverId = JSON.parse(localStorage.getItem("user"))._id;
@@ -96,42 +111,6 @@ const AddRide = () => {
       }
     });
 
-    const geocoder = new MapboxGeocoder({
-      accessToken: mapboxgl.accessToken,
-      mapboxgl: mapboxgl,
-      marker: false,
-      placeholder: "Search for places",
-      collapsed: true,
-      bbox: [72.7878, 33.461, 73.2422, 33.8079],
-      countries: "pk",
-    });
-
-    geocoder.on("result", (e) => {
-      if (isChoosingDepartureRef.current) {
-        if (!departureMarker.current) {
-          departureMarker.current = new mapboxgl.Marker({ color: "black" })
-            .setLngLat(e.result.center)
-            .addTo(map.current);
-          setIsDepartureSet(e.result.center);
-        } else {
-          departureMarker.current.setLngLat(e.result.center);
-          setIsDepartureSet(e.result.center);
-        }
-      } else {
-        if (!destinationMarker.current) {
-          destinationMarker.current = new mapboxgl.Marker({ color: "gray" }) // Changed color to blue
-            .setLngLat(e.result.center)
-            .addTo(map.current);
-          setIsDestinationSet(e.result.center);
-        } else {
-          destinationMarker.current.setLngLat(e.result.center);
-          setIsDestinationSet(e.result.center);
-        }
-      }
-    });
-
-    map.current.addControl(geocoder);
-
     const radius = 20;
     const bbox = [
       lng - radius / (111.32 * Math.cos((lat * Math.PI) / 180)),
@@ -141,13 +120,6 @@ const AddRide = () => {
     ];
 
     map.current.setMaxBounds(bbox);
-
-    const geocoderContainer = document.querySelector(
-      ".mapboxgl-ctrl-geocoder .suggestions"
-    );
-    if (geocoderContainer) {
-      geocoderContainer.style.zIndex = "15";
-    }
   }, [lng, lat, zoom]);
 
   useEffect(() => {
@@ -221,9 +193,7 @@ const AddRide = () => {
   };
 
   const getRoute = async (depLong, depLat, destLong, destLat) => {
-    // make a directions request using cycling profile
-    // an arbitrary start will always be the same
-    // only the end or destination will change
+
     const query = await fetch(
       `https://api.mapbox.com/directions/v5/mapbox/driving/${depLong},${depLat};${destLong},${destLat}?steps=true&geometries=geojson&access_token=${mapboxgl.accessToken}`,
       { method: "GET" }
@@ -310,12 +280,102 @@ const AddRide = () => {
     }
   };
 
+  const handleSelect = async (address) => {
+    try {
+      const results = await geocodeByAddress(address);
+      const latLng = await getLatLng(results[0]);
+      console.log("Coordinates:", latLng);
+      
+      if (isChoosingDepartureRef.current) {
+        if (!departureMarker.current) {
+          departureMarker.current = new mapboxgl.Marker({ color: "black" })
+            .setLngLat([latLng.lng, latLng.lat])
+            .addTo(map.current);
+          setIsDepartureSet([latLng.lng, latLng.lat]);
+        } else {
+          departureMarker.current.setLngLat([
+            latLng.lng,
+            latLng.lat,
+          ]);
+          setIsDepartureSet([latLng.lng, latLng.lat]);
+        }
+        listingData.departure = address;
+      } else {
+        if (!destinationMarker.current) {
+          destinationMarker.current = new mapboxgl.Marker({ color: "gray" })
+            .setLngLat([latLng.lng, latLng.lat])
+            .addTo(map.current);
+          setIsDestinationSet([latLng.lng, latLng.lat]);
+        } else {
+          destinationMarker.current.setLngLat([latLng.lng, latLng.lat]);
+          setIsDestinationSet([latLng.lng, latLng.lat]);
+        }
+        listingData.destination = address;
+      }
+
+      map.current.flyTo({
+        center: [latLng.lng, latLng.lat],
+        zoom: 17, 
+        speed: 1.5, 
+      });
+
+      setAddress("");
+      
+    } catch (error) {
+      console.error("Error selecting place:", error);
+    }
+  };
+
+
   return (
     <>
       <Navbar />
       <div className="mt-[10vh]">
         <div ref={mapContainer} className="map-container"></div>
-        <div className="fixed top-[20vh] right-3 flex flex-col gap-2 items-end">
+        <div className="fixed top-[12vh] right-3 flex flex-col gap-2 items-end">
+
+        <div className="relative">
+          
+          <PlacesAutocomplete
+              value={address}
+              onChange={setAddress}
+              onSelect={handleSelect}
+              searchOptions={searchOptions}
+            >
+              {({ getInputProps, suggestions, getSuggestionItemProps, loading }) => (
+                <div>
+                  <input
+                    {...getInputProps({
+                      placeholder: `${isSearchOpen ? "Find Your Location" : ""}`,
+                      className : `text-lg py-2  ${isSearchOpen ? "w-full px-3 pr-8" : "w-12"} border-0 outline-none transition-all ease-in-out duration-150`
+
+                    })}
+                  />
+                  <div>
+                    {loading ? <div>Loading...</div> : null}
+
+                    {suggestions.map((suggestion) => {
+                      const style = {
+                        backgroundColor: suggestion.active ? "#4CE5B1" : "#161616",
+                        color: suggestion.active ? "black" : "white",
+                        border: "1px solid black",
+                        padding: "6px",
+                      };
+
+                      return (
+                        <div {...getSuggestionItemProps(suggestion, { style })}>
+                          {suggestion.description}
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+            </PlacesAutocomplete>
+          
+          <IoSearchOutline size={25} color="black" className="cursor-pointer absolute right-2 top-2" onClick={()=>setIsSearchOpen(true)}/>
+          </div>
+
           <div
             className={`${
               isChoosingDepartureStyle
