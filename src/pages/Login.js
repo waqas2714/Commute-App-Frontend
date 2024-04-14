@@ -85,7 +85,7 @@ const Login = () => {
   },[])
 
   return (
-    <div className="bg-black pt-3">
+    <div className="bg-black pt-3 min-h-[100vh]">
       <img
         src="/mainLogo.png"
         className="max-w-[240px] sm:max-w-[70%] mx-auto md:min-w-[100vh]"
