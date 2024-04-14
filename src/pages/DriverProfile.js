@@ -211,7 +211,7 @@ const DriverProfile = () => {
                   )
                   
                   : <p className="text-center text-[#4CE5B1] text-xl font-semibold">
-                  No Rides Were Scheduled.
+                  No Reviews Were Given.
                 </p>
                 }
               </div>

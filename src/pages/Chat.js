@@ -231,7 +231,7 @@ const Chat = () => {
                         >
                           <h5
                             className={`text-[#4CE5B1] ${
-                              userId == chat._id && "text-right"
+                              userId == chat._id && "text-right text-sm"
                             }`}
                           >
                             {userId == chat._id ? "Me" : chat.username}
