@@ -37,7 +37,7 @@ const SignupDriver = () => {
     }
 
     try {
-      const {data} = await axios.post(`${process.env.BACKEND_URL}/api/auth/registerDriver`, {
+      const {data} = await axios.post(`${backendUrl}/api/auth/registerDriver`, {
         ...car,
         id
       })
@@ -73,7 +73,7 @@ const SignupDriver = () => {
           return toast.error("Please Log In.", toastOptions);
         }
         // Call API to verify token
-        const response = await axios.get(`${process.env.BACKEND_URL}/api/auth/verifyToken`, {
+        const response = await axios.get(`${backendUrl}/api/auth/verifyToken`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },

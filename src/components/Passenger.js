@@ -18,7 +18,7 @@ const Passenger = ({
     try {
       e.preventDefault();
       const { data } = await axios.delete(
-        `${process.env.BACKEND_URL}/api/rideListings/removePassenger/${listingId}/${passengerId}`
+        `${backendUrl}/api/rideListings/removePassenger/${listingId}/${passengerId}`
       );
       if (!data.success) {
         return toast.error(data.error, toastOptions);

@@ -5,6 +5,7 @@ import axios from "axios";
 
 import { toast } from "react-toastify";
 import { toastOptions } from "..";
+import { backendUrl } from "../utils/backendUrl";
 
 const RideRequest = ({
   rideRequestId,
@@ -36,7 +37,7 @@ const RideRequest = ({
       try {
         if (decision === "reject") {
           const { data } = await axios.delete(
-            `${process.env.BACKEND_URL}/api/rideListings/rejectRideRequest/${rideRequestId}`
+            `${backendUrl}/api/rideListings/rejectRideRequest/${rideRequestId}`
           );
   
           if (!data.success) {
@@ -52,7 +53,7 @@ const RideRequest = ({
           );
         } else {
           const { data } = await axios.get(
-            `${process.env.BACKEND_URL}/api/rideListings/acceptRideRequest/${rideRequestId}`
+            `${backendUrl}/api/rideListings/acceptRideRequest/${rideRequestId}`
           );
   
           if (!data.success) {

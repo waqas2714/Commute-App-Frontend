@@ -23,7 +23,7 @@ const ResetPassword = () => {
                 return toast.error("Passwords should match.", toastOptions);
             }
 
-            const {data} = await axios.post(`${process.env.BACKEND_URL}/api/auth/resetPassword`,
+            const {data} = await axios.post(`${backendUrl}/api/auth/resetPassword`,
             {password, token});
 
             if (!data.success) {

@@ -124,7 +124,7 @@ const Signup = () => {
       formData.append("cms", user.cms);
       
       const { data } = await axios.post(
-        `${process.env.BACKEND_URL}/api/auth/signup`,
+        `${backendUrl}/api/auth/signup`,
         formData,
         {
           headers: {

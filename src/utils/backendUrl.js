@@ -1,0 +1,1 @@
+export const backendUrl = "https://nustwheelz-backend-836962819a44.herokuapp.com"

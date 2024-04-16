@@ -7,6 +7,7 @@ import { toast } from "react-toastify";
 import { toastOptions } from "..";
 
 import { useNavigate } from "react-router-dom";
+import { backendUrl } from "../utils/backendUrl";
 
 const CurrentRides = () => {
   const [rideRequests, setRideRequests] = useState([]);
@@ -19,7 +20,7 @@ const CurrentRides = () => {
     try {
       if (navigator.onLine) {
         const { data } = await axios.get(
-          `${process.env.BACKEND_URL}/api/rideListings/myRideRequests/${driverId}`
+          `${backendUrl}/api/rideListings/myRideRequests/${driverId}`
         );
     
         if (!data.success) {
@@ -45,7 +46,7 @@ const CurrentRides = () => {
     try {
       if (navigator.onLine) {
         const { data } = await axios.get(
-          `${process.env.BACKEND_URL}/api/rideListings/myListings/${driverId}`
+          `${backendUrl}/api/rideListings/myListings/${driverId}`
         );
     
         if (!data.success) {
@@ -80,7 +81,7 @@ const CurrentRides = () => {
           return toast.error("Please Log In.", toastOptions);
         }
         // Call API to verify token
-        const response = await axios.get(`${process.env.BACKEND_URL}/api/auth/verifyToken`, {
+        const response = await axios.get(`${backendUrl}/api/auth/verifyToken`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },

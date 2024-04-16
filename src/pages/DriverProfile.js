@@ -6,6 +6,7 @@ import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { toastOptions } from "..";
+import { backendUrl } from "../utils/backendUrl";
 
 const DriverProfile = () => {
   const [driver, setDriver] = useState(null);
@@ -19,7 +20,7 @@ const DriverProfile = () => {
   const getDriverInfo = async () => {
     try {
       const { data } = await axios.get(
-        `${process.env.BACKEND_URL}/api/auth/driverInfo/${driverId}/${userId}`
+        `${backendUrl}/api/auth/driverInfo/${driverId}/${userId}`
       );
       if (!data.success) {
         setIsLoading(false);
@@ -41,7 +42,7 @@ const DriverProfile = () => {
 
   const getReviews = async ()=>{
     try {
-      const {data} = await axios.get(`${process.env.BACKEND_URL}/api/reviews/getReviewsDriver/${driverId}`);
+      const {data} = await axios.get(`${backendUrl}/api/reviews/getReviewsDriver/${driverId}`);
       if (!data.success) {
         return toast.error(data.error, toastOptions);
       }
@@ -87,7 +88,7 @@ const DriverProfile = () => {
           return toast.error("Please Log In.", toastOptions);
         }
         // Call API to verify token
-        const response = await axios.get(`${process.env.BACKEND_URL}/api/auth/verifyToken`, {
+        const response = await axios.get(`${backendUrl}/api/auth/verifyToken`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },

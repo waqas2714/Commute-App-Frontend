@@ -30,7 +30,7 @@ const Login = () => {
       }
 
       const { data } = await axios.post(
-          `${process.env.BACKEND_URL}/api/auth/login`,
+          `${backendUrl}/api/auth/login`,
           formData
         );
   
@@ -52,7 +52,7 @@ const Login = () => {
     if (token) {
       try {
         // Call API to verify token
-        const response = await axios.get(`${process.env.BACKEND_URL}/api/auth/verifyToken`, {
+        const response = await axios.get(`${backendUrl}/api/auth/verifyToken`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },

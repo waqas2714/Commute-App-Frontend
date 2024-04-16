@@ -12,8 +12,10 @@ import { RxCross1 } from "react-icons/rx";
 import { MdOutlinePersonRemoveAlt1 } from "react-icons/md";
 import { GoKebabHorizontal } from "react-icons/go";
 import { IoCheckmarkDone } from "react-icons/io5";
+import { backendUrl } from "../utils/backendUrl";
+import { mapboxApiToken } from "../utils/mapboxApiToken";
 
-mapboxgl.accessToken = process.env.MAPBOX_TOKEN;
+mapboxgl.accessToken = mapboxApiToken;
 
 const ListingDetail = () => {
   const [details, setDetails] = useState({});
@@ -51,7 +53,7 @@ const ListingDetail = () => {
   const getData = async () => {
     try {
       const { data } = await axios.get(
-        `${process.env.BACKEND_URL}/api/rideListings/getListing/${id}/${userId}`
+        `${backendUrl}/api/rideListings/getListing/${id}/${userId}`
       );
       if (!data.listing.success) {
         toast.error(data.error);
@@ -120,7 +122,7 @@ const ListingDetail = () => {
     e.preventDefault();
     try {
       const { data } = await axios.post(
-        `${process.env.BACKEND_URL}/api/rideListings/addRideRequest`,
+        `${backendUrl}/api/rideListings/addRideRequest`,
         { userId, listingId: id }
       );
 
@@ -173,7 +175,7 @@ const ListingDetail = () => {
       };
 
       const { data } = await axios.put(
-        `${process.env.BACKEND_URL}/api/rideListings/updateListing/${id}`,
+        `${backendUrl}/api/rideListings/updateListing/${id}`,
         updatedListing
       );
 
@@ -193,7 +195,7 @@ const ListingDetail = () => {
     e.preventDefault();
     try {
       const { data } = await axios.delete(
-        `${process.env.BACKEND_URL}/api/rideListings/removePassenger/${id}/${userId}`
+        `${backendUrl}/api/rideListings/removePassenger/${id}/${userId}`
       );
 
       if (!data.success) {
@@ -210,7 +212,7 @@ const ListingDetail = () => {
   const finishRide = async ()=>{
     try {
       console.log(id);
-      const {data} = await axios.delete(`${process.env.BACKEND_URL}/api/rideListings/finishRide/${id}`)
+      const {data} = await axios.delete(`${backendUrl}/api/rideListings/finishRide/${id}`)
 
       if (!data.success) {
         return toast.error(data.error, toastOptions);
@@ -248,7 +250,7 @@ const ListingDetail = () => {
           return toast.error("Please Log In.", toastOptions);
         }
         // Call API to verify token
-        const response = await axios.get(`${process.env.BACKEND_URL}/api/auth/verifyToken`, {
+        const response = await axios.get(`${backendUrl}/api/auth/verifyToken`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },

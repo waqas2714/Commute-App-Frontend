@@ -27,7 +27,7 @@ const RideListing = ({ id, from, to, date, time, setRideListings }) => {
     if (navigator.onLine) {
       try {
         const { data } = await axios.delete(
-          `${process.env.BACKEND_URL}/api/rideListings/removeListing/${id}`
+          `${backendUrl}/api/rideListings/removeListing/${id}`
         );
   
         if (!data.success) {
