@@ -7,6 +7,7 @@ import RideOffer from "../components/RideOffer";
 import ReviewUser from "../components/ReviewUser";
 import { toastOptions } from "..";
 import { useNavigate } from "react-router-dom";
+import { backendUrl } from "../utils/backendUrl";
 
 const MyRequests = () => {
   const [requests, setRequests] = useState([]);

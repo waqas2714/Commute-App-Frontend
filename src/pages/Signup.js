@@ -4,6 +4,7 @@ import { toast } from "react-toastify";
 import { toastOptions } from "..";
 
 import axios from "axios";
+import { backendUrl } from "../utils/backendUrl";
 
 const initialStateUser = {
   name: "",

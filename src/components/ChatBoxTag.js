@@ -2,6 +2,7 @@ import axios from "axios";
 import React from "react";
 import { toastOptions } from "..";
 import { toast } from "react-toastify";
+import { backendUrl } from "../utils/backendUrl";
 
 const ChatBoxTag = ({from, to, date, time, listingId, isDriver, setOpenChat, setChat, setDestination, setDeparture, setChatListing, socket, scrollToBottom}) => {
  

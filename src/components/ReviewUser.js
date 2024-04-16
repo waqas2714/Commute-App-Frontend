@@ -3,6 +3,7 @@ import axios from 'axios';
 
 import {toast} from 'react-toastify';
 import { toastOptions } from "..";
+import { backendUrl } from "../utils/backendUrl";
 
 const ReviewUser = ({ image, driverName, from, to, reviewId, setReviews }) => {
     const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);

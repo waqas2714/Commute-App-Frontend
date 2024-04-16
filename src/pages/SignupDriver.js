@@ -5,6 +5,7 @@ import { toastOptions } from "..";
 
 import axios from "axios";
 import Navbar from "../components/Navbar";
+import { backendUrl } from "../utils/backendUrl";
 
 const initialStateCar = {
   name: "",

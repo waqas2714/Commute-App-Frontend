@@ -4,6 +4,7 @@ import axios from "axios";
 
 import { toastOptions } from "..";
 import { toast } from "react-toastify";
+import { backendUrl } from "../utils/backendUrl";
 
 const Passenger = ({
   name,

@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import axios from "axios";
 import { toastOptions } from "..";
+import { backendUrl } from "../utils/backendUrl";
 
 const RideListing = ({ id, from, to, date, time, setRideListings }) => {
   const dateFormat = (dateString) => {
