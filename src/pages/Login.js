@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { toastOptions } from "..";
 import axios from "axios";
-import { backendUrl } from "../utils/backendUrl";
+
 
 const initialState = {
   email: "",
@@ -30,7 +30,7 @@ const Login = () => {
       }
 
       const { data } = await axios.post(
-          `${backendUrl}/api/auth/login`,
+          `${process.env.BACKEND_URL}/api/auth/login`,
           formData
         );
   
@@ -52,7 +52,7 @@ const Login = () => {
     if (token) {
       try {
         // Call API to verify token
-        const response = await axios.get(`${backendUrl}/api/auth/verifyToken`, {
+        const response = await axios.get(`${process.env.BACKEND_URL}/api/auth/verifyToken`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },

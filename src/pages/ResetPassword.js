@@ -3,7 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { toast } from 'react-toastify';
 import { toastOptions } from '..';
 import axios from 'axios';
-import { backendUrl } from '../utils/backendUrl';
+
 
 const ResetPassword = () => {
     const [password, setPassword] = useState(""); 
@@ -23,7 +23,7 @@ const ResetPassword = () => {
                 return toast.error("Passwords should match.", toastOptions);
             }
 
-            const {data} = await axios.post(`${backendUrl}/api/auth/resetPassword`,
+            const {data} = await axios.post(`${process.env.BACKEND_URL}/api/auth/resetPassword`,
             {password, token});
 
             if (!data.success) {

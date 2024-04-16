@@ -1,7 +1,7 @@
 import React from "react";
 import { CiTrash } from "react-icons/ci";
 import { Link } from "react-router-dom";
-import { backendUrl } from "../utils/backendUrl";
+
 import { toast } from "react-toastify";
 import axios from "axios";
 import { toastOptions } from "..";
@@ -27,7 +27,7 @@ const RideListing = ({ id, from, to, date, time, setRideListings }) => {
     if (navigator.onLine) {
       try {
         const { data } = await axios.delete(
-          `${backendUrl}/api/rideListings/removeListing/${id}`
+          `${process.env.BACKEND_URL}/api/rideListings/removeListing/${id}`
         );
   
         if (!data.success) {

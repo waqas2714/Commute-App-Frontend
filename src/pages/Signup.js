@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { toastOptions } from "..";
-import { backendUrl } from "../utils/backendUrl";
+
 import axios from "axios";
 
 const initialStateUser = {
@@ -124,7 +124,7 @@ const Signup = () => {
       formData.append("cms", user.cms);
       
       const { data } = await axios.post(
-        `${backendUrl}/api/auth/signup`,
+        `${process.env.BACKEND_URL}/api/auth/signup`,
         formData,
         {
           headers: {

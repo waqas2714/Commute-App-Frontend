@@ -1,6 +1,5 @@
 import axios from "axios";
 import React from "react";
-import { backendUrl } from "../utils/backendUrl";
 import { toastOptions } from "..";
 import { toast } from "react-toastify";
 
@@ -26,7 +25,7 @@ const ChatBoxTag = ({from, to, date, time, listingId, isDriver, setOpenChat, set
 
   const getChat = async ()=>{
     try {
-      const {data} = await axios.get(`${backendUrl}/api/chat/getChat/${listingId}`);
+      const {data} = await axios.get(`${process.env.BACKEND_URL}/api/chat/getChat/${listingId}`);
 
       if (!data.success) {
         return toast.error("Could not find chat for this listing, please try again.", toastOptions);

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import axios from 'axios';
-import { backendUrl } from "../utils/backendUrl";
+
 import {toast} from 'react-toastify';
 import { toastOptions } from "..";
 
@@ -15,7 +15,7 @@ const ReviewUser = ({ image, driverName, from, to, reviewId, setReviews }) => {
           return
         }
         try {
-            const {data} = await axios.post(`${backendUrl}/api/reviews/addReview/${reviewId}`, {comment});
+            const {data} = await axios.post(`${process.env.BACKEND_URL}/api/reviews/addReview/${reviewId}`, {comment});
             
             if (!data.success) {
                 return toast.error(data.error, toastOptions);

@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import Navbar from "../components/Navbar";
-import { backendUrl, mapBoxToken } from "../utils/backendUrl";
+
 import mapboxgl from "mapbox-gl";
 import RideOffer from "../components/RideOffer";
 import { IoIosArrowDown, IoIosArrowUp  } from "react-icons/io";
@@ -14,7 +14,7 @@ import PlacesAutocomplete, {
   getLatLng,
 } from "react-places-autocomplete";
 
-mapboxgl.accessToken = mapBoxToken;
+mapboxgl.accessToken = process.env.MAPBOX_TOKEN;
 
 const GetRide = () => {
   const mapContainer = useRef(null);
@@ -132,7 +132,7 @@ const GetRide = () => {
           return toast.error("Please Log In.", toastOptions);
         }
         // Call API to verify token
-        const response = await axios.get(`${backendUrl}/api/auth/verifyToken`, {
+        const response = await axios.get(`${process.env.BACKEND_URL}/api/auth/verifyToken`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -176,7 +176,7 @@ const GetRide = () => {
   const findRides = async (e) => {
     e.preventDefault();
     try {
-      const {data} = await axios.get(`${backendUrl}/api/rideListings/getRides/${departureMarker.current.getLngLat().lat}/${departureMarker.current.getLngLat().lng}/${destinationMarker.current.getLngLat().lat}/${destinationMarker.current.getLngLat().lng}`);
+      const {data} = await axios.get(`${process.env.BACKEND_URL}/api/rideListings/getRides/${departureMarker.current.getLngLat().lat}/${departureMarker.current.getLngLat().lng}/${destinationMarker.current.getLngLat().lat}/${destinationMarker.current.getLngLat().lng}`);
 
       if (data.length > 0) {
         setRides(data);

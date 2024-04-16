@@ -2,7 +2,7 @@ import React from "react";
 import { RxCross1 } from "react-icons/rx";
 import { FaCheck } from "react-icons/fa6";
 import axios from "axios";
-import { backendUrl } from "../utils/backendUrl";
+
 import { toast } from "react-toastify";
 import { toastOptions } from "..";
 
@@ -36,7 +36,7 @@ const RideRequest = ({
       try {
         if (decision === "reject") {
           const { data } = await axios.delete(
-            `${backendUrl}/api/rideListings/rejectRideRequest/${rideRequestId}`
+            `${process.env.BACKEND_URL}/api/rideListings/rejectRideRequest/${rideRequestId}`
           );
   
           if (!data.success) {
@@ -52,7 +52,7 @@ const RideRequest = ({
           );
         } else {
           const { data } = await axios.get(
-            `${backendUrl}/api/rideListings/acceptRideRequest/${rideRequestId}`
+            `${process.env.BACKEND_URL}/api/rideListings/acceptRideRequest/${rideRequestId}`
           );
   
           if (!data.success) {

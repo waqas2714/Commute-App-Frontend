@@ -1,7 +1,7 @@
 import React from "react";
 import { CiTrash } from "react-icons/ci";
 import axios from "axios";
-import { backendUrl } from "../utils/backendUrl";
+
 import { toastOptions } from "..";
 import { toast } from "react-toastify";
 
@@ -18,7 +18,7 @@ const Passenger = ({
     try {
       e.preventDefault();
       const { data } = await axios.delete(
-        `${backendUrl}/api/rideListings/removePassenger/${listingId}/${passengerId}`
+        `${process.env.BACKEND_URL}/api/rideListings/removePassenger/${listingId}/${passengerId}`
       );
       if (!data.success) {
         return toast.error(data.error, toastOptions);

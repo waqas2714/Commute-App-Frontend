@@ -2,7 +2,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { backendUrl } from "../utils/backendUrl";
+
 import { toastOptions } from "..";
 
 const ForgotPassword = () => {
@@ -18,7 +18,7 @@ const ForgotPassword = () => {
             }
 
             const {data} = await axios.post(
-                `${backendUrl}/api/auth/forgotPassword`,
+                `${process.env.BACKEND_URL}/api/auth/forgotPassword`,
                 {email}
             );
 

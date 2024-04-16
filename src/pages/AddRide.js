@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import Navbar from "../components/Navbar";
-import { backendUrl, mapBoxToken } from "../utils/backendUrl";
+
 import { RxCross1 } from "react-icons/rx";
 import mapboxgl from "mapbox-gl";
 import axios from "axios";
@@ -13,7 +13,7 @@ import PlacesAutocomplete, {
 } from "react-places-autocomplete";
 import { IoSearchOutline } from "react-icons/io5";
 
-mapboxgl.accessToken = mapBoxToken;
+mapboxgl.accessToken = process.env.MAPBOX_TOKEN;
 
 const initialState = {
   departure: "",
@@ -167,7 +167,7 @@ const AddRide = () => {
           return toast.error("Please Log In.", toastOptions);
         }
         // Call API to verify token
-        const response = await axios.get(`${backendUrl}/api/auth/verifyToken`, {
+        const response = await axios.get(`${process.env.BACKEND_URL}/api/auth/verifyToken`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -274,7 +274,7 @@ const AddRide = () => {
         return toast.error("Please select a valid date/time.", toastOptions);
       }
 
-        const {data} = await axios.post(`${backendUrl}/api/rideListings/addListing`, listingData);
+        const {data} = await axios.post(`${process.env.BACKEND_URL}/api/rideListings/addListing`, listingData);
 
         if (!data.success) {
           console.log("data not success");

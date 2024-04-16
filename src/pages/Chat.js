@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import io from "socket.io-client";
-import { backendUrl } from "../utils/backendUrl";
+
 import Navbar from "../components/Navbar";
 import ChatBoxTag from "../components/ChatBoxTag";
 import { IoMdArrowRoundBack } from "react-icons/io";
@@ -10,7 +10,7 @@ import { toastOptions } from "..";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
-const socket = io(backendUrl);
+const socket = io(process.env.BACKEND_URL);
 const Chat = () => {
   const [chat, setChat] = useState([]);
   const [chatTags, setChatTags] = useState([]);
@@ -33,7 +33,7 @@ const Chat = () => {
     if (message !== "") {
       try {
         const { data } = await axios.post(
-          `${backendUrl}/api/chat/addChat/${chatListing}/${userId}`,
+          `${process.env.BACKEND_URL}/api/chat/addChat/${chatListing}/${userId}`,
           { message }
         );
         if (!data.success) {
@@ -52,7 +52,7 @@ const Chat = () => {
   const getChatTags = async () => {
     try {
       const { data } = await axios.get(
-        `${backendUrl}/api/chat/getAllChats/${userId}`
+        `${process.env.BACKEND_URL}/api/chat/getAllChats/${userId}`
       );
       if (!data.success) {
         return toast.error(
@@ -99,7 +99,7 @@ const Chat = () => {
           return toast.error("Please Log In.", toastOptions);
         }
         // Call API to verify token
-        const response = await axios.get(`${backendUrl}/api/auth/verifyToken`, {
+        const response = await axios.get(`${process.env.BACKEND_URL}/api/auth/verifyToken`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import axios from "axios";
-import { backendUrl } from "../utils/backendUrl";
+
 import { toast } from "react-toastify";
 import RideOffer from "../components/RideOffer";
 import ReviewUser from "../components/ReviewUser";
@@ -20,7 +20,7 @@ const MyRequests = () => {
     try {
       if (navigator.onLine) {
         const { data } = await axios.get(
-          `${backendUrl}/api/rideListings/passengerRideRequests/${userId}`
+          `${process.env.BACKEND_URL}/api/rideListings/passengerRideRequests/${userId}`
         );
         if (!data.success) {
           return toast.error(
@@ -46,7 +46,7 @@ const MyRequests = () => {
     try {
       if (navigator.onLine) {
         const res = await axios.get(
-          `${backendUrl}/api/rideListings/getScheduledRidesPassenger/${userId}`
+          `${process.env.BACKEND_URL}/api/rideListings/getScheduledRidesPassenger/${userId}`
         );
         if (!res.data.success) {
           return toast.error(
@@ -72,7 +72,7 @@ const MyRequests = () => {
     try {
       if (navigator.onLine) {
         const resReviews = await axios.get(
-          `${backendUrl}/api/reviews/getReviewsUser/${userId}`
+          `${process.env.BACKEND_URL}/api/reviews/getReviewsUser/${userId}`
         );
   
         if (!resReviews.data.success) {
@@ -124,7 +124,7 @@ const MyRequests = () => {
           return toast.error("Please Log In.", toastOptions);
         }
         // Call API to verify token
-        const response = await axios.get(`${backendUrl}/api/auth/verifyToken`, {
+        const response = await axios.get(`${process.env.BACKEND_URL}/api/auth/verifyToken`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
