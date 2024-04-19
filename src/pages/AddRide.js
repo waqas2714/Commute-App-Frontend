@@ -14,6 +14,7 @@ import PlacesAutocomplete, {
 import { IoSearchOutline } from "react-icons/io5";
 import { backendUrl } from "../utils/backendUrl";
 import { mapboxApiToken } from "../utils/mapboxApiToken";
+import Loader from "../components/Loader";
 
 mapboxgl.accessToken = mapboxApiToken;
 
@@ -48,6 +49,7 @@ const AddRide = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [listingData, setListingData] = useState(initialState);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [address, setAddress] = useState("");
   const searchOptions = {    
     locationRestriction: {
@@ -276,14 +278,16 @@ const AddRide = () => {
         return toast.error("Please select a valid date/time.", toastOptions);
       }
 
+      setIsLoading(true);
         const {data} = await axios.post(`${backendUrl}/api/rideListings/addListing`, listingData);
 
         if (!data.success) {
-          console.log("data not success");
+          setIsLoading(false);
           return toast.error(data.error, toastOptions);
         }
 
       toast.success("Ride added successfully", toastOptions);
+      setIsLoading(false);
       navigate(`/listingDetail/${data.listingId}`);
     } catch (error) {
       console.log(error);
@@ -340,6 +344,9 @@ const AddRide = () => {
   return (
     <>
       <Navbar />
+      {
+        isLoading && <Loader />
+      }
       <div className="mt-[10vh]">
         <div ref={mapContainer} className="map-container"></div>
         <div className="fixed top-[12vh] right-3 flex flex-col gap-2 items-end">

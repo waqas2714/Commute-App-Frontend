@@ -106,6 +106,7 @@ const MyRequests = () => {
         getScheduledRides(),
         getUserReviews(),
       ]);
+
       setIsLoading(false);
       
     } catch (error) {
@@ -157,9 +158,9 @@ const MyRequests = () => {
         <h1 className="text-center text-white text-4xl p-4 font-bold">
           Scheduled Rides
         </h1>
-        <div className="p-4 md:flex md:flex-wrap md:gap-2 text-white">
+        <div className={`p-4 md:flex ${isLoading && "justify-center text-center"} md:flex-wrap md:gap-2 text-[#4CE5B1]`}>
           {isLoading ? (
-            <p>Loading...</p>
+            <p className="text-center" >Loading...</p>
           ) : scheduled.length > 0 ? (
             scheduled.map((request, index) => {
               return (
@@ -186,9 +187,9 @@ const MyRequests = () => {
         <h1 className="text-center text-white text-4xl p-4 font-bold">
           My Requests
         </h1>
-        <div className="p-4 md:flex md:flex-wrap md:gap-2 text-white">
+        <div className={`p-4 ${isLoading && "justify-center text-center"} md:flex md:flex-wrap md:gap-2 text-[#4CE5B1]`}>
           {isLoading ? (
-            <p>Loading...</p>
+            <p className="text-center" >Loading...</p>
           ) : requests.length > 0 ? (
             requests.map((request, index) => {
               return (
@@ -215,9 +216,9 @@ const MyRequests = () => {
         <h1 className="text-center text-white text-4xl p-4 font-bold">
           Reviews to Give
         </h1>
-        <div className="p-4 sm:flex sm:flex-wrap sm:gap-[1vw] text-white">
+        <div className={`p-4 sm:flex ${isLoading && "justify-center text-center"} sm:flex-wrap sm:gap-[1vw] text-[#4CE5B1]`}>
           {isLoading ? (
-            <p>Loading...</p>
+            <p className="text-center" >Loading...</p>
           ) : reviews.length > 0 ? (
             reviews.map((review, index) => {
               return (

@@ -7,6 +7,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { toastOptions } from "..";
 import { backendUrl } from "../utils/backendUrl";
+import Loader from "../components/Loader";
 
 const DriverProfile = () => {
   const [driver, setDriver] = useState(null);
@@ -23,7 +24,7 @@ const DriverProfile = () => {
         `${backendUrl}/api/auth/driverInfo/${driverId}/${userId}`
       );
       if (!data.success) {
-        setIsLoading(false);
+        navigate('/');
         return toast.error("Driver Not Found.", toastOptions);
       }
 
@@ -44,7 +45,7 @@ const DriverProfile = () => {
     try {
       const {data} = await axios.get(`${backendUrl}/api/reviews/getReviewsDriver/${driverId}`);
       if (!data.success) {
-        return toast.error(data.error, toastOptions);
+        return toast.error("There was a problem getting reviews.", toastOptions);
       }
 
       setReview(data.reviews)
@@ -220,9 +221,7 @@ const DriverProfile = () => {
           )}
         </>
       ) : (
-        <h1 className="text-white text-3xl font-bold text-center mt-4">
-          Loading...
-        </h1>
+        <Loader />
       )}
     </>
   );

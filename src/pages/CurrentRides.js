@@ -8,10 +8,12 @@ import { toastOptions } from "..";
 
 import { useNavigate } from "react-router-dom";
 import { backendUrl } from "../utils/backendUrl";
+import Loader from "../components/Loader";
 
 const CurrentRides = () => {
   const [rideRequests, setRideRequests] = useState([]);
   const [rideListings, setRideListings] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
   const driverId = JSON.parse(localStorage.getItem("user"))._id;
@@ -19,14 +21,17 @@ const CurrentRides = () => {
   const fetchRideRequests = async () => {
     try {
       if (navigator.onLine) {
+        setIsLoading(true);
         const { data } = await axios.get(
           `${backendUrl}/api/rideListings/myRideRequests/${driverId}`
         );
     
         if (!data.success) {
+          setIsLoading(false);
           return toast.error(data.error, toastOptions);
         }
-    
+        
+        setIsLoading(false);
         localStorage.setItem("rideRequests", JSON.stringify(data.rideRequests));
         setRideRequests(data.rideRequests);
       } else {
@@ -112,6 +117,9 @@ const CurrentRides = () => {
   return (
     <>
       <Navbar />
+      {
+        isLoading && <Loader />
+      }
       <div className="mt-[10vh] min-h-[90vh] bg-black py-4 px-8">
         <h1 className="text-white text-2xl font-semibold text-center mb-4">
           Ride Requests

@@ -14,6 +14,7 @@ import { GoKebabHorizontal } from "react-icons/go";
 import { IoCheckmarkDone } from "react-icons/io5";
 import { backendUrl } from "../utils/backendUrl";
 import { mapboxApiToken } from "../utils/mapboxApiToken";
+import Loader from "../components/Loader";
 
 mapboxgl.accessToken = mapboxApiToken;
 
@@ -25,6 +26,7 @@ const ListingDetail = () => {
   const [lat, setLat] = useState(33.642782);
   const [isRequested, setIsRequested] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [formattedDate, setFormattedDate] = useState("");
   const [openDriverOptions, setOpenDriverOptions] = useState(false);
   const { id } = useParams();
   const userId = JSON.parse(localStorage.getItem("user"))._id;
@@ -45,10 +47,10 @@ const ListingDetail = () => {
 
   const revertDateFormat = (formattedDate) => {
     const [day, month, year] = formattedDate.split("-");
-    const date = new Date(`${year}-${month}-${day}`);
-    const isoString = date.toISOString();
+    const isoString = new Date(`${year}-${month}-${day}`).toISOString();
     return isoString.slice(0, isoString.length - 1);
   };
+  
 
   const getData = async () => {
     try {
@@ -56,10 +58,11 @@ const ListingDetail = () => {
         `${backendUrl}/api/rideListings/getListing/${id}/${userId}`
       );
       if (!data.listing.success) {
+        setIsLoading(false);
         toast.error(data.error);
         return;
       }
-      data.listing.listing.date = dateFormat(data.listing.listing.date);
+      setFormattedDate(dateFormat(data.listing.listing.date))
       setDetails(data.listing.listing);
       setIsRequested(data.isRequested);
       setIsLoading(false);
@@ -166,6 +169,13 @@ const ListingDetail = () => {
         return toast.error("Please select a valid date/time.", toastOptions);
       }
 
+      if (details.seatsAvailable < details.passengers.length) {
+        const seatsDifference = details.passengers.length - details.seatsAvailable;
+        const errorMessage = `Seats available now are less than the passengers already added. Please remove at least ${seatsDifference} passengers to change the available seats to ${details.seatsAvailable}.`;
+        return toast.error(errorMessage, toastOptions);
+      }
+      
+
       const updatedListing = {
         departure: details.departure,
         destination: details.destination,
@@ -209,34 +219,35 @@ const ListingDetail = () => {
     }
   };
 
-  const finishRide = async ()=>{
+  const finishRide = async () => {
     try {
       console.log(id);
-      const {data} = await axios.delete(`${backendUrl}/api/rideListings/finishRide/${id}`)
+      const { data } = await axios.delete(
+        `${backendUrl}/api/rideListings/finishRide/${id}`
+      );
 
       if (!data.success) {
         return toast.error(data.error, toastOptions);
       }
 
       toast.success("Ride Finished!", toastOptions);
-      navigate('/addRide');
+      navigate("/addRide");
     } catch (error) {
       console.log(error);
     }
-  }
+  };
 
-  useEffect(()=>{
-    if(!navigator.onLine){
+  useEffect(() => {
+    if (!navigator.onLine) {
       const mode = JSON.parse(localStorage.getItem("isDriverMode"));
       if (mode) {
-        navigate('/currentRides');
+        navigate("/currentRides");
       } else {
         navigate("/myRequests");
       }
       toast.error("You do not have an internet connection.", toastOptions);
     }
-  },[])
-
+  }, []);
 
   useEffect(() => {
     const checkToken = async () => {
@@ -260,7 +271,10 @@ const ListingDetail = () => {
         if (!response.data) {
           navigate("/");
           localStorage.clear();
-          return toast.error("Session Expired. Please Log In Again.", toastOptions);
+          return toast.error(
+            "Session Expired. Please Log In Again.",
+            toastOptions
+          );
         }
       } catch (error) {
         console.log(error);
@@ -270,8 +284,8 @@ const ListingDetail = () => {
     checkToken(); // Call the function
   }, []);
 
-
   useEffect(() => {
+    setIsLoading(true);
     getData();
   }, []);
 
@@ -284,7 +298,7 @@ const ListingDetail = () => {
     ) {
       pickupPointMap.current = new mapboxgl.Map({
         container: pickupPointMapContainer.current,
-        style: 'mapbox://styles/mapbox/dark-v10',
+        style: "mapbox://styles/mapbox/dark-v10",
         center: [
           parseFloat(details.pickupPoint.long),
           parseFloat(details.pickupPoint.lat),
@@ -293,7 +307,7 @@ const ListingDetail = () => {
       });
 
       new mapboxgl.Marker({
-        color: 'black' 
+        color: "black",
       })
         .setLngLat([
           parseFloat(details.pickupPoint.long),
@@ -344,7 +358,7 @@ const ListingDetail = () => {
     ) {
       routeMap.current = new mapboxgl.Map({
         container: routeMapContainer.current,
-        style: 'mapbox://styles/mapbox/dark-v10',
+        style: "mapbox://styles/mapbox/dark-v10",
         center: [
           parseFloat(details.pickupPoint.long),
           parseFloat(details.pickupPoint.lat),
@@ -354,18 +368,17 @@ const ListingDetail = () => {
 
       // Add marker for pickup point
       new mapboxgl.Marker({
-        color : 'black'
+        color: "black",
       })
         .setLngLat([
           parseFloat(details.pickupPoint.long),
           parseFloat(details.pickupPoint.lat),
         ])
         .addTo(routeMap.current);
-      
 
       // Add marker for destination
       new mapboxgl.Marker({
-      color : "gray"  
+        color: "gray",
       })
         .setLngLat([parseFloat(details.longdest), parseFloat(details.latdest)])
         .addTo(routeMap.current);
@@ -411,6 +424,7 @@ const ListingDetail = () => {
   return (
     <>
       <Navbar />
+
       {!isLoading ? (
         <div className="mt-[10vh] pt-8 bg-black">
           {/* Modal and  Backdrop for editing */}
@@ -525,7 +539,10 @@ const ListingDetail = () => {
                     <CiEdit
                       size={50}
                       className="text-white p-2 border border-black hover:text-[#4CE5B1] transition-all ease-in-out duration-150 cursor-pointer"
-                      onClick={() => setIsModalOpen(true)}
+                      onClick={() => {
+                        setIsModalOpen(true);
+                        setOpenDriverOptions(false);
+                      }}
                     />
                     <IoCheckmarkDone
                       size={50}
@@ -627,7 +644,7 @@ const ListingDetail = () => {
             </div>
             <div className="flex gap-2 items-baseline p-4 sm:w-[40vw] md:w-[30vw]">
               <h2 className="font-bold text-2xl text-[#4CE5B1]">Date:</h2>
-              <p className="text-white text-xl">{details.date}</p>
+              <p className="text-white text-xl">{formattedDate}</p>
             </div>
             <div className="flex gap-2 items-baseline p-4 sm:w-[40vw] md:w-[30vw]">
               <h2 className="font-bold text-2xl text-[#4CE5B1]">Time:</h2>
@@ -681,7 +698,7 @@ const ListingDetail = () => {
           </div>
         </div>
       ) : (
-        <h1>Loading...</h1>
+        <Loader />
       )}
     </>
   );

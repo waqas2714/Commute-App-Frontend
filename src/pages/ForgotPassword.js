@@ -5,9 +5,11 @@ import { toast } from "react-toastify";
 
 import { toastOptions } from "..";
 import { backendUrl } from "../utils/backendUrl";
+import Loader from "../components/Loader";
 
 const ForgotPassword = () => {
     const [email, setEmail] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
 
     const handleSubmit = async (e)=>{
@@ -15,8 +17,10 @@ const ForgotPassword = () => {
             e.preventDefault();
 
             if (email === "") {
-                toast.error("Please enter an Email.");
+                return toast.error("Please enter an Email.", toastOptions);
             }
+
+            setIsLoading(true);
 
             const {data} = await axios.post(
                 `${backendUrl}/api/auth/forgotPassword`,
@@ -24,9 +28,11 @@ const ForgotPassword = () => {
             );
 
             if (!data.success) {
-                return toast.error(data.error, toastOptions);
+              setIsLoading(false)
+              return toast.error(data.error, toastOptions);
             }
 
+            setIsLoading(false);
             toast.success(`An email has been sent to ${email}. Reset your password from there.`, toastOptions);
             navigate(`/`);
 
@@ -43,6 +49,12 @@ const ForgotPassword = () => {
 
     
   return (
+    <>
+    
+    {
+      isLoading && <Loader />
+    }
+
     <div className="bg-black min-h-screen pb-8">
       <img
         src="forgotPasswordLogo.png"
@@ -74,6 +86,8 @@ const ForgotPassword = () => {
         </button>
       </form>
     </div>
+
+    </>
   );
 };
 

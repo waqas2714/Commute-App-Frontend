@@ -6,6 +6,7 @@ import { toastOptions } from "..";
 import axios from "axios";
 import Navbar from "../components/Navbar";
 import { backendUrl } from "../utils/backendUrl";
+import Loader from "../components/Loader";
 
 const initialStateCar = {
   name: "",
@@ -16,6 +17,7 @@ const initialStateCar = {
 
 const SignupDriver = () => {
   const [car, setCar] = useState(initialStateCar);
+  const [isLoading, setIsLoading] = useState(false);
   const id = JSON.parse(localStorage.getItem("user"))._id;
   const navigate = useNavigate();
 
@@ -38,17 +40,20 @@ const SignupDriver = () => {
     }
 
     try {
+      setIsLoading(true);
       const {data} = await axios.post(`${backendUrl}/api/auth/registerDriver`, {
         ...car,
         id
       })
 
       if (!data.success) {
-        toast.error(data.error, toastOptions);
+        setIsLoading(false);
+        return toast.error(data.error, toastOptions);
       }
 
       localStorage.setItem("user", JSON.stringify(data.user));
       toast.success("You have successfully signed up as a driver!");
+      setIsLoading(false);
       navigate('/getRide');
     } catch (error) {
       console.error("Error:", error);
@@ -98,6 +103,9 @@ const SignupDriver = () => {
   return (
     <>
     <Navbar />
+    {
+      isLoading && <Loader />
+    }
     <div className="bg-black pt-3 mt-[10vh]">
       <img
         src="/resetPasswordLogo.png"

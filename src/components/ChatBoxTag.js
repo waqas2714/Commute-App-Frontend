@@ -4,7 +4,7 @@ import { toastOptions } from "..";
 import { toast } from "react-toastify";
 import { backendUrl } from "../utils/backendUrl";
 
-const ChatBoxTag = ({from, to, date, time, listingId, isDriver, setOpenChat, setChat, setDestination, setDeparture, setChatListing, socket, scrollToBottom}) => {
+const ChatBoxTag = ({from, to, date, time, listingId, isDriver, setOpenChat, setChat, setDestination, setDeparture, setChatListing, chatListing, socket, scrollToBottom}) => {
  
   const dateFormat = (dateString) => {
     const date = new Date(dateString);
@@ -24,27 +24,35 @@ const ChatBoxTag = ({from, to, date, time, listingId, isDriver, setOpenChat, set
     return str.length > 10 ? str.slice(0, 10) + "..." : str;
   };
 
-  const getChat = async ()=>{
+  const getChat = async () => {
     try {
-      const {data} = await axios.get(`${backendUrl}/api/chat/getChat/${listingId}`);
+        
+      if (chatListing != "") {
+        socket.emit("leave-room", chatListing);
+      }
 
+      const { data } = await axios.get(`${backendUrl}/api/chat/getChat/${listingId}`);
+  
       if (!data.success) {
         return toast.error("Could not find chat for this listing, please try again.", toastOptions);
       }
-
+  
+      // Join new room
       socket.emit("join-room", listingId);
-      
+      socket.room = listingId; // Update current room
+  
       console.log(data.chats);
       setChat(data.chats);
       setDeparture(from);
       setDestination(to);
       const timeoutId = setTimeout(scrollToBottom, 100);
-      setOpenChat(true); 
-      setChatListing(listingId);     
+      setOpenChat(true);
+      setChatListing(listingId);
     } catch (error) {
       console.log(error);
     }
-  }
+  };
+
 
   return (
     <div className={` flex flex-wrap justify-between p-3 gap-y-3 sm:w-[46vw] md:w-[33vw] md:max-w-[290px] mt-2 ${isDriver ? "bg-[#94cebb] hover:bg-[#4CE5B1] text-black" : "bg-[#161616] hover:bg-[#2c2c2c] text-white"}  cursor-pointer  transition-all ease-in-out duration-150`} onClick={getChat}>

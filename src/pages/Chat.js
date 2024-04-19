@@ -38,7 +38,7 @@ const Chat = () => {
           { message }
         );
         if (!data.success) {
-          return toast.error(data.error, toastOptions);
+          return toast.error("Message could not be sent. Please try again.", toastOptions);
         }
         socket.emit("send-msg", { message, username, _id: userId, listingId : chatListing });
         setChat((prevState) => [...prevState, { message, username, _id: userId }]);
@@ -167,6 +167,7 @@ const Chat = () => {
                   setDestination={setDestination}
                   setDeparture={setDeparture}
                   setChatListing={setChatListing}
+                  chatListing={chatListing}
                   socket={socket}
                   scrollToBottom={scrollToBottom}
                   key={index}
@@ -198,10 +199,14 @@ const Chat = () => {
               chatListing.length > 0 ? /* Heading  */
               <>
               <div className=" h-[15%] flex justify-between items-center md:px-6 bg-[#111111]">
-                <div className="w-[12%] h-full bg-[#303030] hover:bg-[#585858] transition-all ease-in-out duration-200 flex justify-center items-center cursor-pointer md:hidden  ">
+                <div className="w-[12%] h-full bg-[#303030] hover:bg-[#585858] transition-all ease-in-out duration-200 flex justify-center items-center cursor-pointer md:hidden"
+                onClick={() => {
+                  socket.emit("leave-room", chatListing);
+                  setOpenChat(false)
+                }}
+                >
                   <IoMdArrowRoundBack
                     size={35}
-                    onClick={() => setOpenChat(false)}
                   />
                 </div>
   

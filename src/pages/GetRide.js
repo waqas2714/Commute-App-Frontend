@@ -14,6 +14,7 @@ import PlacesAutocomplete, {
   getLatLng,
 } from "react-places-autocomplete";
 import { backendUrl } from "../utils/backendUrl";
+import Loader from "../components/Loader";
 
 mapboxgl.accessToken = mapboxApiToken;
 
@@ -32,6 +33,7 @@ const GetRide = () => {
   const [isChoosingDepartureStyle, setIsChoosingDepartureStyle] =  useState(true);
   const [isRidesOpen, setIsRidesOpen] =  useState(true);
   const [isReadyToFind, setIsReadyToFind] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [areRidesFound, setAreRidesFound] = useState(false);
   const [rides, setRides] = useState([]);
   const [address, setAddress] = useState("");
@@ -176,6 +178,7 @@ const GetRide = () => {
 
   const findRides = async (e) => {
     e.preventDefault();
+    setIsLoading(true); 
     try {
       const {data} = await axios.get(`${backendUrl}/api/rideListings/getRides/${departureMarker.current.getLngLat().lat}/${departureMarker.current.getLngLat().lng}/${destinationMarker.current.getLngLat().lat}/${destinationMarker.current.getLngLat().lng}`);
 
@@ -187,7 +190,7 @@ const GetRide = () => {
         setAreRidesFound(false);
         toast.error("No rides found right now, please try again later.", toastOptions);
       } 
-
+      setIsLoading(false);
     } catch (error) {
       console.log(error);
     }
@@ -238,6 +241,9 @@ const GetRide = () => {
   return (
     <>
       <Navbar />
+      {
+        isLoading && <Loader />
+      }
       <div className="mt-[10vh]">
         <div ref={mapContainer} className="map-container"></div>
         <div className="fixed top-[12vh] right-3 flex flex-col gap-2 items-end">
