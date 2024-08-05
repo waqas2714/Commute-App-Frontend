@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  frontend:
+    image: waqas2714/nustwheelz-frontend
+    ports:
+      - "3000:80"
+    networks:
+      - app-network
+    environment:
+      - REACT_APP_API_URL=http://backend:5001
+
+  backend:
+    image: waqas2714/nustwheelz-backend
+    ports:
+      - "5001:5001"
+    networks:
+      - app-network
+    environment:
+      - PORT=5001
+      - MONGO_URI=mongodb+srv://waqasali00123:ofMR8qYdPPZofIBo@commute.ti242qm.mongodb.net/?retryWrites=true&w=majority
+      - USER_EMAIL=waqasali00123@gmail.com
+      - USER_EMAIL_PASSWORD=smulltkdhjvlfptx
+      - JWT_SECRET=RABADABADOO
+      - FRONTEND_URL=http://localhost:3000
+      - BACKEND_URL=http://localhost:5001
+      - CLOUDINARY_NAME=dh4vbnhxm
+      - API_KEY=659545259746955
+      - API_SECRET=_2riwnBvl3hvR81jH88StvmqIgA
+
+networks:
+  app-network:
+    driver: bridge
