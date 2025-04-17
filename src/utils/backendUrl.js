@@ -1,1 +1,2 @@
-export const backendUrl = "https://nustwheelz-backend-836962819a44.herokuapp.com"
+// export const backendUrl = "http://localhost:5001"
+export const backendUrl = "https://nustwheelz-backend.onrender.com"
